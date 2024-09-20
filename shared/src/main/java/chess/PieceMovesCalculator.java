@@ -1,6 +1,8 @@
 package chess;
 
 import chess.PieceMoveCalculators.BishopMoveCalculator;
+import chess.PieceMoveCalculators.QueenMoveCalculator;
+import chess.PieceMoveCalculators.RookMoveCalculator;
 
 import java.util.List;
 
@@ -14,15 +16,19 @@ public class PieceMovesCalculator {
         this.board = board;
         this.myPosition = myPosition;
     }
-    protected boolean InBoardRange(int row, int col) {
+    protected boolean inBoardRange(int row, int col) {
         return (row >= LOWERBOUND) && (col >= LOWERBOUND) && (row <= UPPERBOUND) && (col <= UPPERBOUND);
     }
-    public List<ChessMove> CalculateMoves(ChessBoard board, ChessPosition myPosition){
+    public List<ChessMove> calculateMoves(ChessBoard board, ChessPosition myPosition){
         if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.BISHOP) {
-            return new BishopMoveCalculator(board, myPosition).CalculateMoves(board, myPosition);
-        }
-        else return null;
+            return new BishopMoveCalculator(board, myPosition).calculateMoves(board, myPosition);
+        } else if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.ROOK) {
+            return new RookMoveCalculator(board, myPosition).calculateMoves(board, myPosition);
+        } else if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.QUEEN) {
+            return new QueenMoveCalculator(board, myPosition).calculateMoves(board, myPosition);
+        } else return null;
     }
+
 
 
 }

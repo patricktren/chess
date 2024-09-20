@@ -76,6 +76,6 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return new PieceMovesCalculator(board, myPosition).CalculateMoves(board, myPosition);
+        return new PieceMovesCalculator(board, myPosition).calculateMoves(board, myPosition);
     }
 }
