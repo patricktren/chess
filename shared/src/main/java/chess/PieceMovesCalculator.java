@@ -27,7 +27,9 @@ public class PieceMovesCalculator {
         } else if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.KNIGHT) {
             return new KnightMoveCalculator(board, myPosition).calculateMoves(board, myPosition);
         } else if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.PAWN) {
-            return new PawnMovesCalculator(board, myPosition).calculateMoves(board, myPosition);
+            return new PawnMoveCalculator(board, myPosition).calculateMoves(board, myPosition);
+        } else if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.KING) {
+            return new KingMoveCalculator(board, myPosition).calculateMoves(board, myPosition);
         } else return null;
     }
 
