@@ -5,100 +5,96 @@ import chess.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PawnMoveCalculator extends PieceMovesCalculator {
+public class PawnMoveCalculator extends PieceMoveCalculator {
+
     public PawnMoveCalculator(ChessBoard board, ChessPosition myPosition) {
         super(board, myPosition);
     }
 
     @Override
-    public List<ChessMove> calculateMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> validPositions = new ArrayList<>();
+    public List<ChessMove> moveCalculator(ChessBoard board, ChessPosition myPosition) {
+        List<ChessMove> validMoves = new ArrayList<>();
+        List<ChessMove> validMovesPromotions = new ArrayList<>();
 
-        // is white pawn:
+        // white piece
         if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
+            // move forward one
+            var targetPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
+            if (isInBounds(targetPosition) && board.getPiece(targetPosition) == null) {
+                validMoves.add(new ChessMove(myPosition, targetPosition, null));
+                // is at starting position and can move forward two
+                targetPosition = new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn());
+                if (myPosition.getRow() == 2 && board.getPiece(targetPosition) == null) {
+                    validMoves.add(new ChessMove(myPosition, targetPosition, null));
+                }
+            }
+            // attack up and right
+            targetPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1);
+            var targetMove = checkSquareBasic(board, myPosition, targetPosition);
+            if (targetMove != null && board.getPiece(targetPosition) != null && board.getPiece(targetPosition).getTeamColor() != ChessGame.TeamColor.WHITE) {
+                validMoves.add(targetMove);
+            }
+            // attack up and left
+            targetPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1);
+            targetMove = checkSquareBasic(board, myPosition, targetPosition);
+            if (targetMove != null && board.getPiece(targetPosition) != null && board.getPiece(targetPosition).getTeamColor() != ChessGame.TeamColor.WHITE) {
+                validMoves.add(targetMove);
+            }
+            // one of these results in promotion
+            for (ChessMove validMove : validMoves) {
+                if (validMove.getEndPosition().getRow() == 8) {
+                    var startPosition = validMove.getStartPosition();
+                    var endPosition = validMove.getEndPosition();
 
-            // can move forward one
-            var positionOneForward = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
-            if (inBoardRange(positionOneForward.getRow(), positionOneForward.getColumn())
-                && board.getPiece(positionOneForward) == null) {
-                validPositions.add(new ChessMove(myPosition, positionOneForward, null));
-            }
-            // enemy up and right
-            var positionEnemyUpRight = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1);
-            if (inBoardRange(positionEnemyUpRight.getRow(), positionEnemyUpRight.getColumn())
-                && board.getPiece(positionEnemyUpRight) != null
-                && board.getPiece(positionEnemyUpRight).getTeamColor() != board.getPiece(myPosition).getTeamColor() ) {
-                validPositions.add(new ChessMove(myPosition, positionEnemyUpRight, null));
-            }
-            // enemy up and left
-            var positionEnemyUpLeft = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1);
-            if (inBoardRange(positionEnemyUpLeft.getRow(), positionEnemyUpLeft.getColumn())
-                    && board.getPiece(positionEnemyUpLeft) != null
-                    && board.getPiece(positionEnemyUpLeft).getTeamColor() != board.getPiece(myPosition).getTeamColor() ) {
-                validPositions.add(new ChessMove(myPosition, positionEnemyUpLeft, null));
-            }
-
-            // is on starting row
-            if (myPosition.getRow() == 2) {
-                var positionOneForwardFromStarting = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
-                var positionTwoForward = new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn());
-                // two positions ahead aren't blocked
-                if (board.getPiece(positionTwoForward) == null
-                    && board.getPiece(positionOneForwardFromStarting) == null) {
-                    validPositions.add(new ChessMove(myPosition, positionTwoForward, null));
+                    validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.QUEEN));
+                    validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.ROOK));
+                    validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.BISHOP));
+                    validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.KNIGHT));
+                } else {
+                    validMovesPromotions.add(validMove);
                 }
             }
         }
-        // is black pawn:
+        // black piece
         else {
-            // can move forward one
-            var positionOneForward = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn());
-            if (inBoardRange(positionOneForward.getRow(), positionOneForward.getColumn())
-                && board.getPiece(positionOneForward) == null) {
-                validPositions.add(new ChessMove(myPosition, positionOneForward, null));
+            // move forward one
+            var targetPosition = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn());
+            if (isInBounds(targetPosition) && board.getPiece(targetPosition) == null) {
+                validMoves.add(new ChessMove(myPosition, targetPosition, null));
+                // is at starting position and can move forward two
+                targetPosition = new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn());
+                if (myPosition.getRow() == 7 && board.getPiece(targetPosition) == null) {
+                    validMoves.add(new ChessMove(myPosition, targetPosition, null));
+                }
             }
-            // enemy down and right
-            var positionEnemyUpRight = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1);
-            if (inBoardRange(positionEnemyUpRight.getRow(), positionEnemyUpRight.getColumn())
-                    && board.getPiece(positionEnemyUpRight) != null
-                    && board.getPiece(positionEnemyUpRight).getTeamColor() != board.getPiece(myPosition).getTeamColor() ) {
-                validPositions.add(new ChessMove(myPosition, positionEnemyUpRight, null));
+            // attack up and right
+            targetPosition = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1);
+            var targetMove = checkSquareBasic(board, myPosition, targetPosition);
+            if (targetMove != null && board.getPiece(targetPosition) != null && board.getPiece(targetPosition).getTeamColor() != ChessGame.TeamColor.BLACK) {
+                validMoves.add(targetMove);
             }
-            // enemy up and left
-            var positionEnemyUpLeft = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1);
-            if (inBoardRange(positionEnemyUpLeft.getRow(), positionEnemyUpLeft.getColumn())
-                    && board.getPiece(positionEnemyUpLeft) != null
-                    && board.getPiece(positionEnemyUpLeft).getTeamColor() != board.getPiece(myPosition).getTeamColor() ) {
-                validPositions.add(new ChessMove(myPosition, positionEnemyUpLeft, null));
+            // attack up and left
+            targetPosition = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1);
+            targetMove = checkSquareBasic(board, myPosition, targetPosition);
+            if (targetMove != null && board.getPiece(targetPosition) != null && board.getPiece(targetPosition).getTeamColor() != ChessGame.TeamColor.BLACK) {
+                validMoves.add(targetMove);
             }
+            // one of these results in promotion
+            for (ChessMove validMove : validMoves) {
+                if (validMove.getEndPosition().getRow() == 1) {
+                    var startPosition = validMove.getStartPosition();
+                    var endPosition = validMove.getEndPosition();
 
-            // is on starting row
-            if (myPosition.getRow() == 7) {
-                var positionOneForwardFromStarting = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn());
-                var positionTwoForward = new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn());
-                // two positions ahead aren't blocked
-                if (board.getPiece(positionTwoForward) == null
-                        && board.getPiece(positionOneForwardFromStarting) == null) {
-                    validPositions.add(new ChessMove(myPosition, positionTwoForward, null));
+                    validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.QUEEN));
+                    validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.ROOK));
+                    validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.BISHOP));
+                    validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.KNIGHT));
+                } else {
+                    validMovesPromotions.add(validMove);
                 }
             }
         }
-        // handle promotions
-        List<ChessMove> promotionAdditions = new ArrayList<>();
-        for (ChessMove move : validPositions) {
-            if (move.getEndPosition().getRow() == 8
-                || move.getEndPosition().getRow() == 1) {
-                promotionAdditions.add(new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.QUEEN));
-                promotionAdditions.add(new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.KNIGHT));
-                promotionAdditions.add(new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.ROOK));
-                promotionAdditions.add(new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.BISHOP));
-            } else {
-                promotionAdditions.add(move);
-            }
-        }
-        validPositions = promotionAdditions;
 
-        return validPositions;
+        return validMovesPromotions;
     }
-
 }

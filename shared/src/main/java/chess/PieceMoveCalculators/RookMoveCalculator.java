@@ -3,80 +3,80 @@ package chess.PieceMoveCalculators;
 import chess.ChessBoard;
 import chess.ChessMove;
 import chess.ChessPosition;
-import chess.PieceMovesCalculator;
+import chess.PieceMoveCalculator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RookMoveCalculator extends PieceMovesCalculator {
+public class RookMoveCalculator extends PieceMoveCalculator {
     public RookMoveCalculator(ChessBoard board, ChessPosition myPosition) {
         super(board, myPosition);
     }
 
     @Override
-    public List<ChessMove> calculateMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> validPositions = new ArrayList<>();
+    public List<ChessMove> moveCalculator(ChessBoard board, ChessPosition myPosition) {
+        List<ChessMove> validMoves = new ArrayList<>();
 
         // up
-        int r = myPosition.getRow() + 1, c = myPosition.getColumn();
-        while (inBoardRange(r, c)) {
-            var thisPosition = new ChessPosition(r, c);
-            var piece = board.getPiece(thisPosition);
-            r += 1;
-            if (piece == null) {
-                validPositions.add(new ChessMove(myPosition, thisPosition, null));
-            } else if (piece.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                validPositions.add(new ChessMove(myPosition, thisPosition, null));
+        int r = myPosition.getRow() + 1;
+        int c = myPosition.getColumn();
+        while (isInBounds(new ChessPosition(r, c))) {
+            var targetPosition = new ChessPosition(r,c);
+            ChessMove targetMove = checkSquareBasic(board, myPosition, targetPosition);
+            if (targetMove != null) {
+                validMoves.add(targetMove);
+            }
+            if (board.getPiece(targetPosition) != null) {
                 break;
-            } else break;
+            }
+            r += 1; // increment row
         }
 
         // down
         r = myPosition.getRow() - 1;
         c = myPosition.getColumn();
-        while (inBoardRange(r, c)) {
-            var thisPosition = new ChessPosition(r, c);
-            var piece = board.getPiece(thisPosition);
-            r -= 1;
-            if (piece == null) {
-                validPositions.add(new ChessMove(myPosition, thisPosition, null));
-            } else if (piece.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                validPositions.add(new ChessMove(myPosition, thisPosition, null));
+        while (isInBounds(new ChessPosition(r, c))) {
+            var targetPosition = new ChessPosition(r,c);
+            ChessMove targetMove = checkSquareBasic(board, myPosition, targetPosition);
+            if (targetMove != null) {
+                validMoves.add(targetMove);
+            }
+            if (board.getPiece(targetPosition) != null) {
                 break;
-            } else break;
+            }
+            r -= 1; // increment row
         }
 
         // right
         r = myPosition.getRow();
         c = myPosition.getColumn() + 1;
-        while (inBoardRange(r, c)) {
-            var thisPosition = new ChessPosition(r, c);
-            var piece = board.getPiece(thisPosition);
-            c += 1;
-            if (piece == null) {
-                validPositions.add(new ChessMove(myPosition, thisPosition, null));
-            } else if (piece.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                validPositions.add(new ChessMove(myPosition, thisPosition, null));
+        while (isInBounds(new ChessPosition(r, c))) {
+            var targetPosition = new ChessPosition(r,c);
+            ChessMove targetMove = checkSquareBasic(board, myPosition, targetPosition);
+            if (targetMove != null) {
+                validMoves.add(targetMove);
+            }
+            if (board.getPiece(targetPosition) != null) {
                 break;
-            } else break;
+            }
+            c += 1; // increment col
         }
 
-        // left
+        // right
         r = myPosition.getRow();
         c = myPosition.getColumn() - 1;
-        while (inBoardRange(r, c)) {
-            var thisPosition = new ChessPosition(r, c);
-            var piece = board.getPiece(thisPosition);
-            c -= 1;
-            if (piece == null) {
-                validPositions.add(new ChessMove(myPosition, thisPosition, null));
-            } else if (piece.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                validPositions.add(new ChessMove(myPosition, thisPosition, null));
+        while (isInBounds(new ChessPosition(r, c))) {
+            var targetPosition = new ChessPosition(r,c);
+            ChessMove targetMove = checkSquareBasic(board, myPosition, targetPosition);
+            if (targetMove != null) {
+                validMoves.add(targetMove);
+            }
+            if (board.getPiece(targetPosition) != null) {
                 break;
-            } else break;
+            }
+            c -= 1; // increment col
         }
 
-
-        return validPositions;
+        return validMoves;
     }
 }

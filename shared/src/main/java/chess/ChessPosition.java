@@ -9,13 +9,11 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessPosition {
-    private final int row;
-    private final int col;
-
-
+    final int row;
+    final int col;
     public ChessPosition(int row, int col) {
-        this.row = row - 1;
-        this.col = col - 1;
+        this.row = row;
+        this.col = col;
     }
 
     /**
@@ -23,7 +21,7 @@ public class ChessPosition {
      * 1 codes for the bottom row
      */
     public int getRow() {
-        return row + 1;
+        return row;
     }
 
     /**
@@ -31,7 +29,7 @@ public class ChessPosition {
      * 1 codes for the left row
      */
     public int getColumn() {
-        return col + 1;
+        return col;
     }
 
     @Override
