@@ -33,6 +33,19 @@ public class ChessGame {
         currentTeamTurn = team;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessGame chessGame = (ChessGame) o;
+        return currentTeamTurn == chessGame.currentTeamTurn && Objects.equals(board, chessGame.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(currentTeamTurn, board);
+    }
+
     /**
      * Enum identifying the 2 possible teams in a chess game
      */
@@ -164,7 +177,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        this.board = board;
+        this.board.squares = board.squares;
     }
 
     /**
@@ -173,6 +186,6 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        return board;
+        return this.board;
     }
 }
