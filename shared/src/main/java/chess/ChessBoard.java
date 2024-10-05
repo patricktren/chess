@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.StringTokenizer;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -15,6 +16,19 @@ public class ChessBoard {
     final int UPPERBOUND = 8;
     public ChessBoard() {
         
+    }
+    @Override
+    public String toString() {
+        String toPrint = "";
+        for (int i=0; i < squares.length; i++) {
+            for (int j=0; j < squares[i].length; j++) {
+                if (squares[i][j] != null) {
+                    toPrint += squares[i][j].getPieceType();
+                }
+            }
+        }
+
+        return toPrint;
     }
 
     /**

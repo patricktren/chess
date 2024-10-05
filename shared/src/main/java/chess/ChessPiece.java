@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.StringTokenizer;
 
 /**
  * Represents a single chess piece
@@ -66,5 +67,12 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         return new PieceMoveCalculator(board, myPosition).moveCalculator(board, myPosition);
+    }
+
+    @Override
+    public String toString() {
+        if (type == null) {
+            return "";
+        }else return type.toString();
     }
 }

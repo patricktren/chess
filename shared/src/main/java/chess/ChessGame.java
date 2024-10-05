@@ -99,15 +99,20 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        var startingPositionPiece = board.getPiece(move.startPosition);
         // starting position is empty
-        if (board.getPiece(move.startPosition) == null) {
+        if (startingPositionPiece == null) {
             throw new InvalidMoveException();
         }
         var validMoves = validMoves(move.startPosition);
         // move is valid?
         if (validMoves.contains(move)) {
             board.addPiece(move.startPosition, null);
-            board.addPiece(move.endPosition, board.getPiece(move.startPosition));
+            board.addPiece(move.endPosition, startingPositionPiece);
+            // is promotion
+            if (move.getPromotionPiece() != null) {
+                board.addPiece(move.endPosition, new ChessPiece(startingPositionPiece.getTeamColor(), move.getPromotionPiece()));
+            }
         }
         else {
             throw new InvalidMoveException();
@@ -157,7 +162,10 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+
+
+
+        return false;
     }
 
     /**
@@ -177,7 +185,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        this.board.squares = board.squares;
+        this.board = board;
     }
 
     /**
