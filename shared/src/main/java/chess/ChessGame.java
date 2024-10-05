@@ -162,10 +162,19 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
+        var validMoves = new ArrayList<ChessMove>();
+        // try making all my moves and see if
+        for (int i=1; i <= board.squares.length; i++) {
+            for (int j=1; j <= board.squares[i - 1].length; j++) {
+                var startPosition = new ChessPosition(i,j);
+                var startPiece = board.getPiece(startPosition);
+                if (startPiece != null && startPiece.getTeamColor() == teamColor) {
+                    validMoves.addAll(validMoves(startPosition));
+                }
 
-
-
-        return false;
+            }
+        }
+        return (validMoves.isEmpty());
     }
 
     /**
