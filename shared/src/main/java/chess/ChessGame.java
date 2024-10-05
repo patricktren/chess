@@ -1,6 +1,5 @@
 package chess;
 
-import java.sql.Array;
 import java.util.*;
 
 /**
@@ -10,9 +9,11 @@ import java.util.*;
  * signature of the existing methods.
  */
 public class ChessGame {
-    TeamColor currentTeamTurn = TeamColor.WHITE;
+    TeamColor currentTeamTurn;
     ChessBoard board;
     public ChessGame() {
+        board = new ChessBoard();
+        currentTeamTurn = TeamColor.WHITE;
 
     }
 
@@ -48,7 +49,34 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        return board.getPiece(startPosition).pieceMoves(board, startPosition);
+        var piece = new ChessPiece(board.getPiece(startPosition).getTeamColor(), board.getPiece(startPosition).getPieceType());
+        var initialValidMoves = piece.pieceMoves(board, startPosition);
+        var validMoves = new ArrayList<ChessMove>();
+
+        ChessPiece endPositionOriginalPiece = null;
+
+        // iterate over initialValidMoves
+        for (ChessMove move:initialValidMoves) {
+            // get endPositionOriginalPiece
+            endPositionOriginalPiece = board.getPiece(move.endPosition);
+
+            // make the move
+            board.addPiece(move.startPosition, null);
+            board.addPiece(move.endPosition, piece);
+            if (isInCheck(piece.getTeamColor())) {
+                board.addPiece(move.startPosition, piece);
+                board.addPiece(move.endPosition, endPositionOriginalPiece);
+                continue;
+            }
+            else {
+                board.addPiece(move.startPosition, piece);
+                board.addPiece(move.endPosition, endPositionOriginalPiece);
+                validMoves.add(move);
+            }
+        }
+        System.out.println(validMoves);
+        return validMoves;
+
     }
 
     /**
@@ -58,8 +86,19 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        board.board[move.startPosition.getRow()][move.startPosition.getColumn()] = null;
-        board.board[move.endPosition.getRow()][move.endPosition.getColumn()] = board.getPiece(move.startPosition);
+        // starting position is empty
+        if (board.getPiece(move.startPosition) == null) {
+            throw new InvalidMoveException();
+        }
+        var validMoves = validMoves(move.startPosition);
+        // move is valid?
+        if (validMoves.contains(move)) {
+            board.addPiece(move.startPosition, null);
+            board.addPiece(move.endPosition, board.getPiece(move.startPosition));
+        }
+        else {
+            throw new InvalidMoveException();
+        }
     }
 
     /**
@@ -69,7 +108,33 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        return false;
+        boolean inCheck = false;
+        ChessPosition kingPosition = null;
+        var enemyPossiblePositions = new HashSet<ChessPosition>();
+
+        for (int i=1; i <= board.squares.length; i++) {
+            for (int j=1; j <= board.squares[i - 1].length; j++) {
+                var position = new ChessPosition(i, j);
+                var piece = board.getPiece(position);
+                // piece isn't null
+                if (piece != null) {
+                    // is kingPosition?
+                    if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == teamColor) {
+                        kingPosition = position;
+                    }
+                    // is enemy piece?
+                    else if (piece.getTeamColor() != teamColor) {
+                        Collection<ChessMove> piecePossibleMoves = board.getPiece(position).pieceMoves(board, position);
+                        for (ChessMove move:piecePossibleMoves) {
+                            enemyPossiblePositions.add(move.endPosition);
+                        }
+                    }
+                }
+            }
+        }
+
+        // check if kingPosition is in the set of enemyPossiblePositions
+        return enemyPossiblePositions.contains(kingPosition);
     }
 
     /**
@@ -99,7 +164,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
