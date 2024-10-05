@@ -13,6 +13,7 @@ public class ChessGame {
     ChessBoard board;
     public ChessGame() {
         board = new ChessBoard();
+        board.resetBoard();
         currentTeamTurn = TeamColor.WHITE;
 
     }
@@ -87,7 +88,7 @@ public class ChessGame {
                 validMoves.add(move);
             }
         }
-        System.out.println(validMoves);
+//        System.out.println(validMoves);
         return validMoves;
 
     }
@@ -100,8 +101,10 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         var startingPositionPiece = board.getPiece(move.startPosition);
-        // starting position is empty
-        if (startingPositionPiece == null) {
+
+        // check for invalid move
+        if (startingPositionPiece == null // starting position is empty
+            || startingPositionPiece.getTeamColor() != currentTeamTurn) { // is it the right player's turn?
             throw new InvalidMoveException();
         }
         var validMoves = validMoves(move.startPosition);
@@ -116,6 +119,12 @@ public class ChessGame {
         }
         else {
             throw new InvalidMoveException();
+        }
+        if (startingPositionPiece.getTeamColor() == TeamColor.WHITE) {
+            currentTeamTurn = TeamColor.BLACK;
+        }
+        else {
+            currentTeamTurn = TeamColor.WHITE;
         }
     }
 
@@ -185,7 +194,19 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        var validMoves = new ArrayList<ChessMove>();
+        // try making all my moves and see if
+        for (int i=1; i <= board.squares.length; i++) {
+            for (int j=1; j <= board.squares[i - 1].length; j++) {
+                var startPosition = new ChessPosition(i,j);
+                var startPiece = board.getPiece(startPosition);
+                if (startPiece != null && startPiece.getTeamColor() == teamColor) {
+                    validMoves.addAll(validMoves(startPosition));
+                }
+
+            }
+        }
+        return (validMoves.isEmpty() && isInCheck(teamColor) == false);
     }
 
     /**

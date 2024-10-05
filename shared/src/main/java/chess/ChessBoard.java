@@ -15,7 +15,6 @@ public class ChessBoard {
     final int LOWERBOUND = 1;
     final int UPPERBOUND = 8;
     public ChessBoard() {
-        
     }
     @Override
     public String toString() {
