@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class MemoryUserDAO implements UserDAO{
     Map<String, User> userMap = new HashMap<>();
+    public MemoryUserDAO() {}
 
     @Override
     // create the user if they don't already exist
