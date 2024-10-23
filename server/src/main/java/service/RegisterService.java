@@ -3,19 +3,15 @@ package service;
 import dataaccess.UserDAO;
 import exception.ResponseException;
 import model.User;
-import org.eclipse.jetty.client.HttpResponseException;
 import protocol.RegisterRequest;
 import protocol.RegisterResult;
 
-import java.util.Objects;
-
-public class UserService {
+public class RegisterService extends Service {
     private final UserDAO userDAO;
 
-    public UserService(UserDAO userDAO) {
+    public RegisterService(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
-
 
     // attempt to register a new user
     RegisterResult registerUser(RegisterRequest registerRequest) throws ResponseException {
@@ -35,7 +31,7 @@ public class UserService {
         }
 
         // check if the user already exists
-        if (userDAO.getUser(registerRequest.username()) != null) {
+        if (userExists(registerRequest.username())) {
             throw new ResponseException(403, "Invalid username: username already taken");
         }
         else {
