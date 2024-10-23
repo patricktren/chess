@@ -32,16 +32,7 @@ public class LoginService extends Service {
         }
         // login
         else {
-            while (true) {
-                var newAuthToken = new AuthToken(UUID.randomUUID().toString(), user.username());
-                if (authTokenDAO.getAuthToken(newAuthToken.getToken()) != null) {
-                    continue;
-                } else {
-                    authTokenDAO.createAuthToken(newAuthToken);
-                    return new LoginResult(user.getUsername(), authTokenDAO.getAuthToken(newAuthToken.getToken()));
-                }
-
-            }
+            return new LoginResult(user.getUsername(), createAuthToken(user.getUsername()).getToken());
         }
     }
 
