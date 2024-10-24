@@ -7,4 +7,5 @@ public interface AuthTokenDAO {
     public AuthToken getAuthToken(String token);
 //    public void updateAuthToken(AuthToken authToken);
     public void deleteAuthToken(AuthToken authToken);
+    public void clearAuthTokens();
 }

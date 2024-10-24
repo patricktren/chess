@@ -9,13 +9,19 @@ import java.util.*;
  * signature of the existing methods.
  */
 public class ChessGame {
-    TeamColor currentTeamTurn;
-    ChessBoard board;
+    private TeamColor currentTeamTurn;
+    private ChessBoard board;
+    private int gameID;
+
     public ChessGame() {
         board = new ChessBoard();
         board.resetBoard();
         currentTeamTurn = TeamColor.WHITE;
 
+    }
+
+    public Integer getGameID() {
+        return gameID;
     }
 
     /**

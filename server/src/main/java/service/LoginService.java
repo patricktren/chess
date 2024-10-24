@@ -9,13 +9,10 @@ import java.util.Objects;
 
 public class LoginService extends Service {
     private final UserDAO userDAO;
-    private final AuthTokenDAO authTokenDAO;
-
 
     public LoginService(Database database) {
         super(database);
         this.userDAO = database.getUserDAO();
-        this.authTokenDAO = database.getAuthTokenDAO();
     }
 
     // attempt to log in a user

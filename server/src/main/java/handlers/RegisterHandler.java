@@ -16,7 +16,7 @@ public class RegisterHandler {
     public RegisterHandler(Database database) {
         this.database = database;
     }
-    public Object registerUser(Request req, Response res) throws ResponseException {
+    public Object registerUser(Request req, Response res) {
         try {
             var newUser = new Gson().fromJson(req.body(), User.class);
             var registerRequest = new RegisterRequest(newUser.getUsername(), newUser.password(), newUser.email());
