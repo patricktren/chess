@@ -1,8 +1,8 @@
 package dataaccess;
 
 public class MemoryDatabase implements Database{
-    private MemoryUserDAO userDAO;
-    private AuthTokenDAO authTokenDAO;
+    private final MemoryUserDAO userDAO;
+    private final AuthTokenDAO authTokenDAO;
 
     public MemoryDatabase() {
         this.userDAO = new MemoryUserDAO();

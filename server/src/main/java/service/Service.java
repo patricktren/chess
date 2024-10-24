@@ -7,8 +7,8 @@ import model.AuthToken;
 import java.util.UUID;
 
 public abstract class Service {
-    UserDAO userDAO;
-    AuthTokenDAO authTokenDAO;
+    protected UserDAO userDAO;
+    protected AuthTokenDAO authTokenDAO;
 
     Service(Database database) {
         this.userDAO = database.getUserDAO();
