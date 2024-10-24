@@ -1,10 +1,8 @@
 package service;
 
-import dataaccess.AuthTokenDAO;
-import dataaccess.UserDAO;
+import dataaccess.*;
+import exception.ResponseException;
 import model.AuthToken;
-import model.User;
-import protocol.RegisterResult;
 
 import java.util.UUID;
 
@@ -12,8 +10,18 @@ public abstract class Service {
     UserDAO userDAO;
     AuthTokenDAO authTokenDAO;
 
-    protected boolean userExists(String username) {
-        return (userDAO.getUser(username) != null);
+    Service(Database database) {
+        this.userDAO = database.getUserDAO();
+        this.authTokenDAO = database.getAuthTokenDAO();
+    }
+
+    protected boolean userExists(String username) throws ResponseException {
+        try {
+            return (userDAO.getUser(username) != null);
+        }
+        catch (DataAccessException er) {
+            throw new ResponseException(500, "Couldn't connect to database");
+        }
     }
     protected AuthToken createAuthToken(String username) {
         while (true) {
