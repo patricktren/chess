@@ -4,7 +4,7 @@ import dataaccess.*;
 import exception.ResponseException;
 import model.User;
 import protocol.RegisterRequest;
-import protocol.RegisterResult;
+import protocol.RegisterResponse;
 
 public class RegisterService extends Service {
     private final UserDAO userDAO;
@@ -17,7 +17,7 @@ public class RegisterService extends Service {
     }
 
     // attempt to register a new user
-    public RegisterResult registerUser(RegisterRequest registerRequest) throws ResponseException {
+    public RegisterResponse registerUser(RegisterRequest registerRequest) throws ResponseException {
         try {
             // check if bad request
             // username is empty (note: isBlank() checks if is whitespace, "", or null)
@@ -42,7 +42,7 @@ public class RegisterService extends Service {
                 var newUser = new User(registerRequest.username(), registerRequest.password(), registerRequest.email());
                 userDAO.createUser(newUser);
                 // create auth & log in the new user
-                return new RegisterResult(newUser.getUsername(), createAuthToken(newUser.username()).getToken());
+                return new RegisterResponse(newUser.getUsername(), createAuthToken(newUser.username()).getToken());
             }
         }
         catch (DataAccessException er) {

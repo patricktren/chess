@@ -3,14 +3,12 @@ package service;
 import dataaccess.Database;
 import dataaccess.MemoryDatabase;
 import exception.ResponseException;
-import handlers.ClearHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import protocol.ClearResult;
 import protocol.RegisterRequest;
 
-public class ClearTest {
+public class ClearTests {
     private static Database database;
 
     @BeforeEach

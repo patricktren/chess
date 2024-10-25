@@ -38,7 +38,7 @@ public class UserTests {
     public void loginUserDoesNotExist() {
         var loginRequest = new LoginRequest("hello", "ree");
         Assertions.assertThrows(ResponseException.class, () -> {
-            var actualResult = new LoginService(database).login(loginRequest);
+            var actualResult = new LoginService(database).loginUser(loginRequest);
         });
     }
 
@@ -54,10 +54,10 @@ public class UserTests {
 
         // login
         var loginRequest = new LoginRequest(newUser.getUsername(), newUser.getPassword());
-        var loginResult = new LoginService(database).login(loginRequest);
+        var loginResult = new LoginService(database).loginUser(loginRequest);
 
         // assert
-        Assertions.assertFalse(loginResult.token().isBlank());
+        Assertions.assertFalse(loginResult.authToken().isBlank());
         Assertions.assertEquals(loginResult.username(), expectedResultUsername);
     }
 
@@ -66,11 +66,11 @@ public class UserTests {
         // register user
         User newUser = new User("coolsammyo", "1cat2cat", "ree@gmail.com");
         var registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
-        RegisterResult registerResult = new RegisterService(database).registerUser(registerRequest);
+        RegisterResponse registerResponse = new RegisterService(database).registerUser(registerRequest);
 
         // logout user
-        var logoutResult = new LogoutService(database).logout(new LogoutRequest(registerResult.authToken()));
-        var expectedResult = new LogoutResult();
+        var logoutResult = new LogoutService(database).logout(new LogoutRequest(registerResponse.authToken()));
+        var expectedResult = new LogoutResponse();
         Assertions.assertEquals(expectedResult, logoutResult);
     }
 
@@ -79,7 +79,7 @@ public class UserTests {
         // register user
         User newUser = new User("coolsammyo", "1cat2cat", "ree@gmail.com");
         var registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
-        RegisterResult registerResult = new RegisterService(database).registerUser(registerRequest);
+        RegisterResponse registerResponse = new RegisterService(database).registerUser(registerRequest);
 
         // assert
         Assertions.assertThrows(ResponseException.class, () -> {

@@ -3,7 +3,7 @@ package service;
 import dataaccess.*;
 import exception.ResponseException;
 import protocol.LoginRequest;
-import protocol.LoginResult;
+import protocol.LoginResponse;
 
 import java.util.Objects;
 
@@ -16,7 +16,7 @@ public class LoginService extends Service {
     }
 
     // attempt to log in a user
-    LoginResult login(LoginRequest loginRequest) throws ResponseException {
+    public LoginResponse loginUser(LoginRequest loginRequest) throws ResponseException {
         try {
             var user = userDAO.getUser(loginRequest.username());
             // user doesn't exist?
@@ -29,7 +29,7 @@ public class LoginService extends Service {
             }
             // login
             else {
-                return new LoginResult(user.getUsername(), createAuthToken(user.getUsername()).getToken());
+                return new LoginResponse(user.getUsername(), createAuthToken(user.getUsername()).getToken());
             }
         }
         catch (DataAccessException er) {

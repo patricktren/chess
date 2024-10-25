@@ -3,11 +3,9 @@ package service;
 import dataaccess.AuthTokenDAO;
 import dataaccess.DataAccessException;
 import dataaccess.Database;
-import dataaccess.UserDAO;
 import exception.ResponseException;
-import model.AuthToken;
 import protocol.LogoutRequest;
-import protocol.LogoutResult;
+import protocol.LogoutResponse;
 
 public class LogoutService extends Service {
     private final AuthTokenDAO authTokenDAO;
@@ -17,9 +15,9 @@ public class LogoutService extends Service {
         this.authTokenDAO = database.getAuthTokenDAO();
     }
 
-    public LogoutResult logout(LogoutRequest logoutRequest) throws ResponseException {
+    public LogoutResponse logout(LogoutRequest logoutRequest) throws ResponseException {
         try {
-            // verify auth token
+            // verify auth authToken
             boolean authTokenExists = verifyAuthToken(logoutRequest.authToken());
             // if authToken is empty or doesn't exist
             if (logoutRequest.authToken().isBlank() || !authTokenExists) {
@@ -28,7 +26,7 @@ public class LogoutService extends Service {
 
             // delete authToken
             authTokenDAO.deleteAuthToken(logoutRequest.authToken());
-            return new LogoutResult();
+            return new LogoutResponse();
         }
         catch (DataAccessException er) {
             throw new ResponseException(500, "Couldn't connect to database");

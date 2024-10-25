@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.Database;
 import exception.ResponseException;
-import protocol.ClearResult;
+import protocol.ClearResponse;
 import spark.Request;
 import spark.Response;
 
@@ -18,7 +18,7 @@ public class ClearHandler {
     public Object clearDatabase(Request req, Response res) throws ResponseException {
         try {
             database.clearDatabase();
-            return new Gson().toJson(new ClearResult());
+            return new Gson().toJson(new ClearResponse());
         }
         catch (DataAccessException er) {
             throw new ResponseException(500, "Failed to connect to database");
