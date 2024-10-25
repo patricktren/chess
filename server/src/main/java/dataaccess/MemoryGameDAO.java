@@ -2,28 +2,34 @@ package dataaccess;
 
 import chess.ChessGame;
 import model.AuthToken;
+import model.Game;
 
 import java.util.*;
 
 public class MemoryGameDAO implements GameDAO {
-    Map<Integer, ChessGame> gameMap = new HashMap<>();
+    Map<Integer, Game> gameMap = new HashMap<>();
     Integer nextGameID = 1000;
 
     MemoryGameDAO() {}
 
     @Override
-    public void createGame(ChessGame newGame) {
-        gameMap.put(newGame.getGameID(), newGame);
+    public void createGame(Game newGame) {
+        gameMap.put(newGame.gameID(), newGame);
     }
 
     @Override
-    public List<ChessGame> getGames(String token) {
+    public Game getGame(Integer gameID) {
+        return gameMap.get(gameID);
+    }
+
+    @Override
+    public ArrayList<Game> getGames(String token) {
         return new ArrayList<>(gameMap.values());
     }
 
     @Override
-    public void updateGame(ChessGame game) {
-
+    public void updateGame(Game game) {
+        gameMap.put(game.gameID(), game);
     }
 
     @Override

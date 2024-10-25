@@ -4,6 +4,7 @@ import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.Database;
 import exception.ResponseException;
+import model.Game;
 import protocol.CreateGameRequest;
 import protocol.CreateGameResponse;
 
@@ -25,10 +26,9 @@ public class CreateGameService extends Service{
             if (createGameRequest.gameName() == null || createGameRequest.gameName().isBlank()) {
                 throw new ResponseException(400, "Error: game name cannot be empty");
             }
-            ChessGame newGame = new ChessGame();
-            newGame.setGameInfo(gameDAO.getNextGameID(), createGameRequest.gameName(), null, null);
+            Game newGame = new Game(gameDAO.getNextGameID(), null, null, createGameRequest.gameName());
             gameDAO.createGame(newGame);
-            return new CreateGameResponse(newGame.getGameID());
+            return new CreateGameResponse(newGame.gameID());
         }
         catch (DataAccessException er) {
             throw new ResponseException(500, "Error: failed to connect to database");

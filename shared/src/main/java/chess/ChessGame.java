@@ -12,24 +12,11 @@ public class ChessGame {
     private TeamColor currentTeamTurn;
     private ChessBoard board;
 
-    private int gameID;
-    private String gameName;
-    private String whitePlayer;
-    private String blackPlayer;
 
     public ChessGame() {
         board = new ChessBoard();
         board.resetBoard();
         currentTeamTurn = TeamColor.WHITE;
-    }
-    public void setGameInfo(Integer gameID, String gameName, String whitePlayer, String blackPlayer) {
-        this.gameID = gameID;
-        this.gameName = gameName;
-        this.whitePlayer = whitePlayer;
-        this.blackPlayer = blackPlayer;
-    }
-    public Integer getGameID() {
-        return gameID;
     }
 
     /**
@@ -53,12 +40,12 @@ public class ChessGame {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessGame chessGame = (ChessGame) o;
-        return gameID == chessGame.gameID && currentTeamTurn == chessGame.currentTeamTurn && Objects.equals(board, chessGame.board) && Objects.equals(gameName, chessGame.gameName) && Objects.equals(whitePlayer, chessGame.whitePlayer) && Objects.equals(blackPlayer, chessGame.blackPlayer);
+        return currentTeamTurn == chessGame.currentTeamTurn && Objects.equals(board, chessGame.board);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(currentTeamTurn, board, gameID, gameName, whitePlayer, blackPlayer);
+        return Objects.hash(currentTeamTurn, board);
     }
 
     /**
