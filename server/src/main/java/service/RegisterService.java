@@ -30,8 +30,8 @@ public class RegisterService extends Service {
             }
             // email is empty or doesn't contain expected chars
             if (registerRequest.email() == null || registerRequest.email().isEmpty()
-                    || !registerRequest.email().contains("@") || !registerRequest.email().contains(".")) {
-                throw new ResponseException(400, "Error");
+                    || !registerRequest.email().contains(".")) {
+                throw new ResponseException(400, "Error: invalid email");
             }
 
             // check if the user already exists
