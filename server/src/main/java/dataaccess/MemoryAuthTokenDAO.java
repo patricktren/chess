@@ -23,8 +23,8 @@ public class MemoryAuthTokenDAO implements AuthTokenDAO{
     }
 
     @Override
-    public void deleteAuthToken(AuthToken authToken) {
-        authTokenMap.remove(authToken.getToken());
+    public void deleteAuthToken(String authToken) {
+        authTokenMap.remove(authToken);
     }
 
     @Override

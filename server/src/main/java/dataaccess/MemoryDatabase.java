@@ -25,7 +25,7 @@ public class MemoryDatabase implements Database{
     }
 
     @Override
-    public void clearDatabase() {
+    public void clearDatabase() throws DataAccessException {
         userDAO.clearUsers();
         authTokenDAO.clearAuthTokens();
         gameDAO.clearGames();

@@ -9,10 +9,12 @@ import java.util.UUID;
 public abstract class Service {
     protected UserDAO userDAO;
     protected AuthTokenDAO authTokenDAO;
+    protected GameDAO gameDAO;
 
     Service(Database database) {
         this.userDAO = database.getUserDAO();
         this.authTokenDAO = database.getAuthTokenDAO();
+        this.gameDAO = database.getGameDAO();
     }
 
     protected boolean userExists(String username) throws ResponseException {
@@ -23,7 +25,7 @@ public abstract class Service {
             throw new ResponseException(500, "Couldn't connect to database");
         }
     }
-    protected AuthToken createAuthToken(String username) {
+    protected AuthToken createAuthToken(String username) throws DataAccessException {
         while (true) {
             var newAuthToken = new AuthToken(UUID.randomUUID().toString(), username);
             if (authTokenDAO.getAuthToken(newAuthToken.getToken()) != null) {
@@ -35,7 +37,8 @@ public abstract class Service {
         }
     }
 
-    protected AuthToken verifyAuth(AuthToken authToken) {
-        return null;
+    protected boolean verifyAuthToken(String authToken) throws DataAccessException {
+        // check if authToken exists
+        return (authTokenDAO.getAuthToken(authToken) != null);
     }
 }

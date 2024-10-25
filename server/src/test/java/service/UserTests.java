@@ -4,8 +4,7 @@ import dataaccess.MemoryDatabase;
 import exception.ResponseException;
 import model.User;
 import org.junit.jupiter.api.*;
-import protocol.LoginRequest;
-import protocol.RegisterRequest;
+import protocol.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserTests {
@@ -60,5 +59,32 @@ public class UserTests {
         // assert
         Assertions.assertFalse(loginResult.token().isBlank());
         Assertions.assertEquals(loginResult.username(), expectedResultUsername);
+    }
+
+    @Test
+    public void logoutSuccess() throws ResponseException {
+        // register user
+        User newUser = new User("coolsammyo", "1cat2cat", "ree@gmail.com");
+        var registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
+        RegisterResult registerResult = new RegisterService(database).registerUser(registerRequest);
+
+        // logout user
+        var logoutResult = new LogoutService(database).logout(new LogoutRequest(registerResult.authToken()));
+        var expectedResult = new LogoutResult();
+        Assertions.assertEquals(expectedResult, logoutResult);
+    }
+
+    @Test
+    public void logoutEmptyToken() throws ResponseException {
+        // register user
+        User newUser = new User("coolsammyo", "1cat2cat", "ree@gmail.com");
+        var registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
+        RegisterResult registerResult = new RegisterService(database).registerUser(registerRequest);
+
+        // assert
+        Assertions.assertThrows(ResponseException.class, () -> {
+            // logout
+            var logoutResult = new LogoutService(database).logout(new LogoutRequest(""));
+        });
     }
 }
