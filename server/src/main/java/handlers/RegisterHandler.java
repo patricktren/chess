@@ -6,6 +6,7 @@ import dataaccess.MemoryDatabase;
 import exception.ResponseException;
 import model.User;
 import protocol.RegisterRequest;
+import protocol.RegisterResponse;
 import service.RegisterService;
 import spark.Request;
 import spark.Response;
@@ -18,14 +19,16 @@ public class RegisterHandler {
     }
 
     public Object registerUser(Request req, Response res) {
+        Message message = null;
         try {
             var newUser = new Gson().fromJson(req.body(), User.class);
             var registerRequest = new RegisterRequest(newUser.getUsername(), newUser.password(), newUser.email());
-            var registerResult = new RegisterService(database).registerUser(registerRequest);
-            return new Gson().toJson(registerResult);
+            var RegisterResponse = new RegisterService(database).registerUser(registerRequest);
+            return new Gson().toJson(RegisterResponse);
         } catch (ResponseException er) {
             res.status(er.getStatusCode());
+            message = new Message(er.getMessage());
         }
-        return "";
+        return new Gson().toJson(message);
     }
 }

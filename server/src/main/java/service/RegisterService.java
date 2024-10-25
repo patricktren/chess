@@ -21,22 +21,22 @@ public class RegisterService extends Service {
         try {
             // check if bad request
             // username is empty (note: isBlank() checks if is whitespace, "", or null)
-            if (registerRequest.username().isBlank()) {
-                throw new ResponseException(400, "Invalid username: must not be empty");
+            if (registerRequest.username() == null || registerRequest.username().isEmpty()) {
+                throw new ResponseException(400, "Error: must not be empty");
             }
             // password is empty
-            if (registerRequest.password().isBlank()) {
-                throw new ResponseException(400, "Invalid password: must not be empty");
+            if (registerRequest.password() == null || registerRequest.password().isEmpty()) {
+                throw new ResponseException(400, "Error: must not be empty");
             }
             // email is empty or doesn't contain expected chars
-            if (registerRequest.email().isBlank()
+            if (registerRequest.email() == null || registerRequest.email().isEmpty()
                     || !registerRequest.email().contains("@") || !registerRequest.email().contains(".")) {
-                throw new ResponseException(400, "Invalid email");
+                throw new ResponseException(400, "Error");
             }
 
             // check if the user already exists
             if (userExists(registerRequest.username())) {
-                throw new ResponseException(403, "Invalid username: username already taken");
+                throw new ResponseException(403, "Error: username already taken");
             } else {
                 // create the user object
                 var newUser = new User(registerRequest.username(), registerRequest.password(), registerRequest.email());
@@ -46,7 +46,7 @@ public class RegisterService extends Service {
             }
         }
         catch (DataAccessException er) {
-            throw new ResponseException(500, "Couldn't connect to database");
+            throw new ResponseException(500, "Error: Couldn't connect to database");
         }
     }
 }

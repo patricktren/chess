@@ -15,7 +15,7 @@ public class LogoutService extends Service {
         this.authTokenDAO = database.getAuthTokenDAO();
     }
 
-    public LogoutResponse logout(LogoutRequest logoutRequest) throws ResponseException {
+    public LogoutResponse logoutUser(LogoutRequest logoutRequest) throws ResponseException {
         try {
             // verify auth authToken
             boolean authTokenExists = verifyAuthToken(logoutRequest.authToken());

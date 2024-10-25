@@ -68,8 +68,8 @@ public class UserTests {
         var registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
         RegisterResponse registerResponse = new RegisterService(database).registerUser(registerRequest);
 
-        // logout user
-        var logoutResult = new LogoutService(database).logout(new LogoutRequest(registerResponse.authToken()));
+        // logoutUser user
+        var logoutResult = new LogoutService(database).logoutUser(new LogoutRequest(registerResponse.authToken()));
         var expectedResult = new LogoutResponse();
         Assertions.assertEquals(expectedResult, logoutResult);
     }
@@ -83,8 +83,8 @@ public class UserTests {
 
         // assert
         Assertions.assertThrows(ResponseException.class, () -> {
-            // logout
-            var logoutResult = new LogoutService(database).logout(new LogoutRequest(""));
+            // logoutUser
+            var logoutResult = new LogoutService(database).logoutUser(new LogoutRequest(""));
         });
     }
 }

@@ -21,11 +21,11 @@ public class LoginService extends Service {
             var user = userDAO.getUser(loginRequest.username());
             // user doesn't exist?
             if (user == null) {
-                throw new ResponseException(500, "User doesn't exist");
+                throw new ResponseException(401, "Error: User doesn't exist");
             }
             // invalid password?
             else if (!Objects.equals(loginRequest.password(), user.getPassword())) {
-                throw new ResponseException(401, "Invalid password");
+                throw new ResponseException(401, "Error: Invalid password");
             }
             // login
             else {
