@@ -1,6 +1,6 @@
 package chess;
 
-import chess.PieceMoveCalculators.*;
+import chess.piecemovecalculators.*;
 
 import java.util.List;
 
@@ -40,6 +40,7 @@ public class PieceMoveCalculator {
                 (board.getPiece(targetPosition) == null
                 || board.getPiece(targetPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor())) {
             return new ChessMove(myPosition, targetPosition, null);
-        } else return null;
+        }
+        else {return null;}
     }
 }

@@ -23,8 +23,8 @@ public class RegisterHandler {
         try {
             var newUser = new Gson().fromJson(req.body(), User.class);
             var registerRequest = new RegisterRequest(newUser.getUsername(), newUser.password(), newUser.email());
-            var RegisterResponse = new RegisterService(database).registerUser(registerRequest);
-            return new Gson().toJson(RegisterResponse);
+            var registerResponse = new RegisterService(database).registerUser(registerRequest);
+            return new Gson().toJson(registerResponse);
         } catch (ResponseException er) {
             res.status(er.getStatusCode());
             message = new Message(er.getMessage());

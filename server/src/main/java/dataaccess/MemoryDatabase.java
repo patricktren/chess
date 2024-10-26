@@ -33,8 +33,8 @@ public class MemoryDatabase implements Database{
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {return true;}
+        if (o == null || getClass() != o.getClass()) {return false;}
         MemoryDatabase that = (MemoryDatabase) o;
         return Objects.equals(userDAO, that.userDAO) && Objects.equals(authTokenDAO, that.authTokenDAO) && Objects.equals(gameDAO, that.gameDAO);
     }

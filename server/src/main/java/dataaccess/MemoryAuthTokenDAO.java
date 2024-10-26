@@ -34,8 +34,8 @@ public class MemoryAuthTokenDAO implements AuthTokenDAO{
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {return true;}
+        if (o == null || getClass() != o.getClass()) {return false;}
         MemoryAuthTokenDAO that = (MemoryAuthTokenDAO) o;
         return Objects.equals(authTokenMap, that.authTokenMap);
     }

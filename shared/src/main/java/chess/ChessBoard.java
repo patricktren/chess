@@ -12,8 +12,8 @@ import java.util.StringTokenizer;
  */
 public class ChessBoard {
     ChessPiece[][] squares = new ChessPiece[8][8];
-    final int LOWERBOUND = 1;
-    final int UPPERBOUND = 8;
+    static int LOWERBOUND = 1;
+    static int UPPERBOUND = 8;
     public ChessBoard() {
     }
     @Override
@@ -100,8 +100,8 @@ public class ChessBoard {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {return true;}
+        if (o == null || getClass() != o.getClass()) {return false;}
         ChessBoard that = (ChessBoard) o;
         return Objects.deepEquals(squares, that.squares);
     }

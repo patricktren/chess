@@ -1,4 +1,4 @@
-package chess.PieceMoveCalculators;
+package chess.piecemovecalculators;
 
 import chess.*;
 
@@ -31,7 +31,8 @@ public class PawnMoveCalculator extends PieceMoveCalculator {
             // attack up and right
             targetPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1);
             var targetMove = checkSquareBasic(board, myPosition, targetPosition);
-            if (targetMove != null && board.getPiece(targetPosition) != null && board.getPiece(targetPosition).getTeamColor() != ChessGame.TeamColor.WHITE) {
+            if (targetMove != null && board.getPiece(targetPosition) != null
+                    && board.getPiece(targetPosition).getTeamColor() != ChessGame.TeamColor.WHITE) {
                 validMoves.add(targetMove);
             }
             // attack up and left
@@ -70,13 +71,15 @@ public class PawnMoveCalculator extends PieceMoveCalculator {
             // attack up and right
             targetPosition = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1);
             var targetMove = checkSquareBasic(board, myPosition, targetPosition);
-            if (targetMove != null && board.getPiece(targetPosition) != null && board.getPiece(targetPosition).getTeamColor() != ChessGame.TeamColor.BLACK) {
+            if (targetMove != null && board.getPiece(targetPosition) != null
+                    && board.getPiece(targetPosition).getTeamColor() != ChessGame.TeamColor.BLACK) {
                 validMoves.add(targetMove);
             }
             // attack up and left
             targetPosition = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1);
             targetMove = checkSquareBasic(board, myPosition, targetPosition);
-            if (targetMove != null && board.getPiece(targetPosition) != null && board.getPiece(targetPosition).getTeamColor() != ChessGame.TeamColor.BLACK) {
+            if (targetMove != null && board.getPiece(targetPosition) != null
+                    && board.getPiece(targetPosition).getTeamColor() != ChessGame.TeamColor.BLACK) {
                 validMoves.add(targetMove);
             }
             // one of these results in promotion
