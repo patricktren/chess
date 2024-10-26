@@ -144,18 +144,18 @@ public class ChessGame {
             for (int j=1; j <= board.squares[i - 1].length; j++) {
                 var position = new ChessPosition(i, j);
                 var piece = board.getPiece(position);
-                // piece isn't null
-                if (piece != null) {
-                    // is kingPosition?
-                    if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == teamColor) {
-                        kingPosition = position;
-                    }
-                    // is enemy piece?
-                    else if (piece.getTeamColor() != teamColor) {
-                        Collection<ChessMove> piecePossibleMoves = board.getPiece(position).pieceMoves(board, position);
-                        for (ChessMove move:piecePossibleMoves) {
-                            enemyPossiblePositions.add(move.endPosition);
-                        }
+                // is kingPosition?
+                if (piece != null
+                        && piece.getPieceType() == ChessPiece.PieceType.KING
+                        && piece.getTeamColor() == teamColor) {
+                    kingPosition = position;
+                }
+                // is enemy piece?
+                else if (piece != null
+                        && piece.getTeamColor() != teamColor) {
+                    Collection<ChessMove> piecePossibleMoves = board.getPiece(position).pieceMoves(board, position);
+                    for (ChessMove move:piecePossibleMoves) {
+                        enemyPossiblePositions.add(move.endPosition);
                     }
                 }
             }

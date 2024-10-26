@@ -18,64 +18,16 @@ public class RookMoveCalculator extends PieceMoveCalculator {
         List<ChessMove> validMoves = new ArrayList<>();
 
         // up
-        int r = myPosition.getRow() + 1;
-        int c = myPosition.getColumn();
-        while (isInBounds(new ChessPosition(r, c))) {
-            var targetPosition = new ChessPosition(r,c);
-            ChessMove targetMove = checkSquareBasic(board, myPosition, targetPosition);
-            if (targetMove != null) {
-                validMoves.add(targetMove);
-            }
-            if (board.getPiece(targetPosition) != null) {
-                break;
-            }
-            r += 1; // increment row
-        }
+        validMoves.addAll(getMoves(board, myPosition, MoveDirection.UP, null));
 
         // down
-        r = myPosition.getRow() - 1;
-        c = myPosition.getColumn();
-        while (isInBounds(new ChessPosition(r, c))) {
-            var targetPosition = new ChessPosition(r,c);
-            ChessMove targetMove = checkSquareBasic(board, myPosition, targetPosition);
-            if (targetMove != null) {
-                validMoves.add(targetMove);
-            }
-            if (board.getPiece(targetPosition) != null) {
-                break;
-            }
-            r -= 1; // increment row
-        }
+        validMoves.addAll(getMoves(board, myPosition, MoveDirection.DOWN, null));
 
         // right
-        r = myPosition.getRow();
-        c = myPosition.getColumn() + 1;
-        while (isInBounds(new ChessPosition(r, c))) {
-            var targetPosition = new ChessPosition(r,c);
-            ChessMove targetMove = checkSquareBasic(board, myPosition, targetPosition);
-            if (targetMove != null) {
-                validMoves.add(targetMove);
-            }
-            if (board.getPiece(targetPosition) != null) {
-                break;
-            }
-            c += 1; // increment col
-        }
+        validMoves.addAll(getMoves(board, myPosition, null, MoveDirection.RIGHT));
 
-        // right
-        r = myPosition.getRow();
-        c = myPosition.getColumn() - 1;
-        while (isInBounds(new ChessPosition(r, c))) {
-            var targetPosition = new ChessPosition(r,c);
-            ChessMove targetMove = checkSquareBasic(board, myPosition, targetPosition);
-            if (targetMove != null) {
-                validMoves.add(targetMove);
-            }
-            if (board.getPiece(targetPosition) != null) {
-                break;
-            }
-            c -= 1; // increment col
-        }
+        // left
+        validMoves.addAll(getMoves(board, myPosition, null, MoveDirection.LEFT));
 
         return validMoves;
     }

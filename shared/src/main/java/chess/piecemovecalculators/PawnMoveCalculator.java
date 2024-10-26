@@ -38,7 +38,8 @@ public class PawnMoveCalculator extends PieceMoveCalculator {
             // attack up and left
             targetPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1);
             targetMove = checkSquareBasic(board, myPosition, targetPosition);
-            if (targetMove != null && board.getPiece(targetPosition) != null && board.getPiece(targetPosition).getTeamColor() != ChessGame.TeamColor.WHITE) {
+            if (targetMove != null && board.getPiece(targetPosition) != null
+                    && board.getPiece(targetPosition).getTeamColor() != ChessGame.TeamColor.WHITE) {
                 validMoves.add(targetMove);
             }
             // one of these results in promotion

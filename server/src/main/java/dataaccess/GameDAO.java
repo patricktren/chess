@@ -12,7 +12,6 @@ public interface GameDAO {
     public Game getGame(Integer gameID);
     public ArrayList<Game> getGames(String token) throws DataAccessException;
     public void updateGame(Game game) throws DataAccessException;
-    public void deleteGame(int gameID) throws DataAccessException;
     public void clearGames() throws DataAccessException;
     public Integer getNextGameID();
 }

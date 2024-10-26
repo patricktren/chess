@@ -2,6 +2,7 @@ package chess;
 
 import chess.piecemovecalculators.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PieceMoveCalculator {
@@ -42,5 +43,55 @@ public class PieceMoveCalculator {
             return new ChessMove(myPosition, targetPosition, null);
         }
         else {return null;}
+    }
+    public enum MoveDirection {
+        UP,
+        DOWN,
+        RIGHT,
+        LEFT
+    }
+    protected ArrayList<ChessMove> getMoves(ChessBoard board, ChessPosition myPosition, MoveDirection yAxis, MoveDirection xAxis) {
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+        int r = myPosition.getRow();
+        int c = myPosition.getColumn();
+        // up/down
+        if (yAxis == MoveDirection.UP) {
+            r = myPosition.getRow() + 1;
+        }
+        else if (yAxis == MoveDirection.DOWN) {
+            r = myPosition.getRow() - 1;
+        }
+        // left/right
+        if (xAxis == MoveDirection.RIGHT) {
+            c = myPosition.getColumn() + 1;
+        }
+        else if (xAxis == MoveDirection.LEFT) {
+            c = myPosition.getColumn() - 1;
+        }
+        while (isInBounds(new ChessPosition(r, c))) {
+            var targetPosition = new ChessPosition(r,c);
+            ChessMove targetMove = checkSquareBasic(board, myPosition, targetPosition);
+            if (targetMove != null) {
+                validMoves.add(targetMove);
+            }
+            if (board.getPiece(targetPosition) != null) {
+                break;
+            }
+            // up/down
+            if (yAxis == MoveDirection.UP) {
+                r += 1;
+            }
+            else if (yAxis == MoveDirection.DOWN) {
+                r -= 1;
+            }
+            // left/right
+            if (xAxis == MoveDirection.RIGHT) {
+                c += 1;
+            }
+            else if (xAxis == MoveDirection.LEFT) {
+                c -= 1;
+            }
+        }
+        return validMoves;
     }
 }

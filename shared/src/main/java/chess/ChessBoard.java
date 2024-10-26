@@ -12,8 +12,8 @@ import java.util.StringTokenizer;
  */
 public class ChessBoard {
     ChessPiece[][] squares = new ChessPiece[8][8];
-    static int LOWERBOUND = 1;
-    static int UPPERBOUND = 8;
+    final static int LOWERBOUND = 1;
+    final static int UPPERBOUND = 8;
     public ChessBoard() {
     }
     @Override
