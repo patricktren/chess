@@ -165,13 +165,7 @@ public class ChessGame {
         return enemyPossiblePositions.contains(kingPosition);
     }
 
-    /**
-     * Determines if the given team is in checkmate
-     *
-     * @param teamColor which team to check for checkmate
-     * @return True if the specified team is in checkmate
-     */
-    public boolean isInCheckmate(TeamColor teamColor) {
+    public ArrayList<ChessMove> validMoves(TeamColor teamColor) {
         var validMoves = new ArrayList<ChessMove>();
         // try making all my moves and see if
         for (int i=1; i <= board.squares.length; i++) {
@@ -181,9 +175,19 @@ public class ChessGame {
                 if (startPiece != null && startPiece.getTeamColor() == teamColor) {
                     validMoves.addAll(validMoves(startPosition));
                 }
-
             }
         }
+        return validMoves;
+    }
+
+    /**
+     * Determines if the given team is in checkmate
+     *
+     * @param teamColor which team to check for checkmate
+     * @return True if the specified team is in checkmate
+     */
+    public boolean isInCheckmate(TeamColor teamColor) {
+        ArrayList<ChessMove> validMoves = validMoves(teamColor);
         return (validMoves.isEmpty());
     }
 
@@ -195,19 +199,8 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        var validMoves = new ArrayList<ChessMove>();
-        // try making all my moves and see if
-        for (int i=1; i <= board.squares.length; i++) {
-            for (int j=1; j <= board.squares[i - 1].length; j++) {
-                var startPosition = new ChessPosition(i,j);
-                var startPiece = board.getPiece(startPosition);
-                if (startPiece != null && startPiece.getTeamColor() == teamColor) {
-                    validMoves.addAll(validMoves(startPosition));
-                }
-
-            }
-        }
-        return (validMoves.isEmpty() && isInCheck(teamColor) == false);
+        ArrayList<ChessMove> validMoves = validMoves(teamColor);
+        return (validMoves.isEmpty() && !isInCheck(teamColor));
     }
 
     /**

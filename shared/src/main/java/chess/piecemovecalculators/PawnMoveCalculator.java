@@ -11,10 +11,29 @@ public class PawnMoveCalculator extends PieceMoveCalculator {
         super(board, myPosition);
     }
 
+    public ArrayList<ChessMove> validMovesPromotions(ChessBoard board, ArrayList<ChessMove> validMoves, Integer promotionRow) {
+        ArrayList<ChessMove> validMovesPromotions = new ArrayList<>();
+        // one of these results in promotion
+        for (ChessMove validMove : validMoves) {
+            if (validMove.getEndPosition().getRow() == promotionRow) {
+                var startPosition = validMove.getStartPosition();
+                var endPosition = validMove.getEndPosition();
+
+                validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.QUEEN));
+                validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.ROOK));
+                validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.BISHOP));
+                validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.KNIGHT));
+            } else {
+                validMovesPromotions.add(validMove);
+            }
+        }
+        return validMovesPromotions;
+    }
+
     @Override
     public List<ChessMove> moveCalculator(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> validMoves = new ArrayList<>();
-        List<ChessMove> validMovesPromotions = new ArrayList<>();
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+        ArrayList<ChessMove> validMovesPromotions = new ArrayList<>();
 
         // white piece
         if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
@@ -43,19 +62,7 @@ public class PawnMoveCalculator extends PieceMoveCalculator {
                 validMoves.add(targetMove);
             }
             // one of these results in promotion
-            for (ChessMove validMove : validMoves) {
-                if (validMove.getEndPosition().getRow() == 8) {
-                    var startPosition = validMove.getStartPosition();
-                    var endPosition = validMove.getEndPosition();
-
-                    validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.QUEEN));
-                    validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.ROOK));
-                    validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.BISHOP));
-                    validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.KNIGHT));
-                } else {
-                    validMovesPromotions.add(validMove);
-                }
-            }
+            validMovesPromotions = validMovesPromotions(board, validMoves, 8);
         }
         // black piece
         else {
@@ -84,19 +91,7 @@ public class PawnMoveCalculator extends PieceMoveCalculator {
                 validMoves.add(targetMove);
             }
             // one of these results in promotion
-            for (ChessMove validMove : validMoves) {
-                if (validMove.getEndPosition().getRow() == 1) {
-                    var startPosition = validMove.getStartPosition();
-                    var endPosition = validMove.getEndPosition();
-
-                    validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.QUEEN));
-                    validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.ROOK));
-                    validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.BISHOP));
-                    validMovesPromotions.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.KNIGHT));
-                } else {
-                    validMovesPromotions.add(validMove);
-                }
-            }
+            validMovesPromotions = validMovesPromotions(board, validMoves, 1);
         }
 
         return validMovesPromotions;
