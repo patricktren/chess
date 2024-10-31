@@ -20,18 +20,18 @@ public class CreateGameService extends Service{
             // verify authToken
             boolean authTokenValid = verifyAuthToken(createGameRequest.authToken());
             if (!authTokenValid) {
-                throw new ResponseException(401, "Error: unauthorized");
+                throw new ResponseException(401, "Error: unauthorized; source: CreateGameService");
             }
             // verify game name is not empty
             if (createGameRequest.gameName() == null || createGameRequest.gameName().isBlank()) {
-                throw new ResponseException(400, "Error: game name cannot be empty");
+                throw new ResponseException(400, "Error: game name cannot be empty; source: CreateGameService");
             }
             Game newGame = new Game(gameDAO.getNextGameID(), null, null, createGameRequest.gameName());
             gameDAO.createGame(newGame);
             return new CreateGameResponse(newGame.gameID());
         }
         catch (DataAccessException er) {
-            throw new ResponseException(500, "Error: failed to connect to database");
+            throw new ResponseException(500, er.getMessage());
         }
     }
 }

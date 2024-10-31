@@ -2,6 +2,7 @@ package server;
 
 import dataaccess.Database;
 import dataaccess.MemoryDatabase;
+import dataaccess.SQLDatabase;
 import handlers.*;
 
 import exception.ResponseException;
@@ -15,8 +16,9 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-        // initialize memory database
-        Database database = new MemoryDatabase();
+        // initialize database
+//        Database database = new MemoryDatabase();
+        Database database = new SQLDatabase();
 
         // initialize handlers
         RegisterHandler registerHandler = new RegisterHandler(database);
