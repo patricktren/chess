@@ -27,27 +27,30 @@ public class SQLAuthTokenDAO implements AuthTokenDAO{
 
     @Override
     public AuthToken getAuthToken(String authToken) throws DataAccessException {
-        String sql_statement = "SELECT auth_token, username FROM auth_tokens WHERE auth_token = " + authToken;
+        String sql_statement = "SELECT auth_token, username FROM auth_tokens WHERE auth_token = '" + authToken + "';";
         try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
+            preparedStatement.executeQuery();
             ResultSet resultSet = preparedStatement.getResultSet();
 
-            if (resultSet.next()) {
+            if (resultSet != null && resultSet.next()) {
                 String authTokenResult = resultSet.getString("auth_token");
                 String usernameResult = resultSet.getString("username");
 
                 return new AuthToken(authTokenResult, usernameResult);
             }
+            else {
+                return null;
+            }
         }
         catch (SQLException er) {
             throw new DataAccessException("Error " + er.getMessage());
         }
-        return null;
     }
 
     @Override
     public void deleteAuthToken(String authToken) throws DataAccessException {
-        String sql_statement = "DELETE FROM auth_tokens WHERE auth_token = " + authToken;
+        String sql_statement = "DELETE FROM auth_tokens WHERE auth_token = '" + authToken + "';";
         try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
             preparedStatement.executeUpdate();

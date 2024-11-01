@@ -1,4 +1,4 @@
 package model;
 
-public record Game(Integer gameID, String whiteUsername, String blackUsername, String gameName) {
+public record Game(Integer gameID, String gameName, String whiteUsername, String blackUsername) {
 }

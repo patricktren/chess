@@ -28,7 +28,7 @@ public class Server {
         JoinGameHandler joinGameHandler = new JoinGameHandler(database);
         GetGamesHandler getGamesHandler = new GetGamesHandler(database);
 
-        var clearHandler = new ClearHandler(database);
+        ClearHandler clearHandler = new ClearHandler(database);
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", registerHandler::registerUser);
@@ -37,7 +37,6 @@ public class Server {
         Spark.post("/game", createGameHandler::createGame);
         Spark.put("/game", joinGameHandler::joinGame);
         Spark.get("/game", getGamesHandler::getGames);
-
 
         Spark.delete("/db", clearHandler::clearDatabase);
 

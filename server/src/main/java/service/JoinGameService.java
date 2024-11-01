@@ -47,17 +47,17 @@ public class JoinGameService extends Service{
             // join game
             String username = authTokenDAO.getAuthToken(joinGameRequest.authToken()).getUsername();
             if (joinGameRequest.playerColor() == ChessGame.TeamColor.WHITE) {
-                Game updatedGame = new Game(game.gameID(), username, game.blackUsername(), game.gameName());
+                Game updatedGame = new Game(game.gameID(), game.gameName(), username, game.blackUsername());
                 gameDAO.updateGame(updatedGame);
             }
             else {
-                Game updatedGame = new Game(game.gameID(), game.whiteUsername(), username, game.gameName());
+                Game updatedGame = new Game(game.gameID(), game.gameName(), game.whiteUsername(), username);
                 gameDAO.updateGame(updatedGame);
             }
             return new JoinGameResponse();
         }
         catch (DataAccessException er) {
-            throw new ResponseException(500, "Couldn't connect to database");
+            throw new ResponseException(500, er.getMessage());
         }
     }
 }

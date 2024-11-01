@@ -26,7 +26,7 @@ public class CreateGameService extends Service{
             if (createGameRequest.gameName() == null || createGameRequest.gameName().isBlank()) {
                 throw new ResponseException(400, "Error: game name cannot be empty; source: CreateGameService");
             }
-            Game newGame = new Game(gameDAO.getNextGameID(), null, null, createGameRequest.gameName());
+            Game newGame = new Game(gameDAO.getNextGameID(), createGameRequest.gameName(), null, null);
             gameDAO.createGame(newGame);
             return new CreateGameResponse(newGame.gameID());
         }

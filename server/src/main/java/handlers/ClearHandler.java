@@ -21,7 +21,7 @@ public class ClearHandler {
             return new Gson().toJson(new ClearResponse());
         }
         catch (DataAccessException er) {
-            throw new ResponseException(500, "Failed to connect to database");
+            throw new ResponseException(500, er.getMessage());
         }
     }
 }

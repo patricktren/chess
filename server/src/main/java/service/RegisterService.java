@@ -46,7 +46,7 @@ public class RegisterService extends Service {
             }
         }
         catch (DataAccessException er) {
-            throw new ResponseException(500, "Error: Couldn't connect to database");
+            throw new ResponseException(500, er.getMessage());
         }
     }
 }

@@ -31,9 +31,10 @@ public class SQLGameDAO implements GameDAO{
 
     @Override
     public Game getGame(Integer gameID) throws DataAccessException {
-        String sql_statement = "SELECT game_id, game_name, white_username, black_username FROM games WHERE game_id = " + gameID;
+        String sql_statement = "SELECT game_id, game_name, white_username, black_username FROM games WHERE game_id = '" + gameID + "';";
         try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
+            preparedStatement.executeQuery();
             ResultSet resultSet = preparedStatement.getResultSet();
 
             if (resultSet.next()) {
@@ -55,9 +56,10 @@ public class SQLGameDAO implements GameDAO{
 
     @Override
     public ArrayList<Game> getGames(String token) throws DataAccessException {
-        String sql_statement = "SELECT game_id, game_name, white_username, black_username FROM games";
+        String sql_statement = "SELECT game_id, game_name, white_username, black_username FROM games;";
         try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
+            preparedStatement.executeQuery();
             ResultSet resultSet = preparedStatement.getResultSet();
 
             ArrayList<Game> games = new ArrayList<>();
@@ -66,6 +68,11 @@ public class SQLGameDAO implements GameDAO{
                 String gameNameResult = resultSet.getString("game_name");
                 String whiteUsernameResult = resultSet.getString("white_username");
                 String blackUsernameResult = resultSet.getString("black_username");
+
+                // set null values to empty strings
+                if (gameNameResult == null) {gameNameResult = "";}
+                if (whiteUsernameResult == null) {whiteUsernameResult = "";}
+                if (blackUsernameResult == null) {blackUsernameResult = "";}
 
                 games.add(new Game(gameIDResult, gameNameResult, whiteUsernameResult, blackUsernameResult));
             }
@@ -78,7 +85,15 @@ public class SQLGameDAO implements GameDAO{
 
     @Override
     public void updateGame(Game game) throws DataAccessException {
-
+        String sql_statement = String.format("UPDATE games SET game_id = %d, game_name = '%s', white_username = '%s', black_username = '%s' WHERE game_id = %d",
+                game.gameID(), game.gameName(), game.whiteUsername(), game.blackUsername(), game.gameID());
+        try (Connection connection = getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException er) {
+            throw new DataAccessException("Error " + er.getMessage());
+        }
     }
 
     @Override
