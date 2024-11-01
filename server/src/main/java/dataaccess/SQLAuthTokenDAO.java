@@ -9,7 +9,7 @@ import static dataaccess.DatabaseManager.getConnection;
 public class SQLAuthTokenDAO implements AuthTokenDAO{
     @Override
     public void createAuthToken(AuthToken authToken) throws DataAccessException {
-        String sql_statement = "INSERT INTO auth_tokens (auth_token, username) VALUES (?, ?, ?)";
+        String sql_statement = "INSERT INTO auth_tokens (auth_token, username) VALUES (?, ?)";
         try (Connection connection = getConnection()) {
             // make the preparedStatement
             PreparedStatement preparedStatement = connection.prepareStatement(sql_statement,

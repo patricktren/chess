@@ -29,15 +29,15 @@ public class SQLUserDAO implements UserDAO{
 
     @Override
     public User getUser(String username) throws DataAccessException {
-        String sql_statement = "SELECT username, password, email FROM users";
+        String sql_statement = "SELECT username, password, email FROM users WHERE username = " + username;
         try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
             ResultSet resultSet = preparedStatement.getResultSet();
 
             if (resultSet.next()) {
                 String usernameResult = resultSet.getString("username");
-                String passwordResult = resultSet.getString("username");
-                String emailResult = resultSet.getString("username");
+                String passwordResult = resultSet.getString("password");
+                String emailResult = resultSet.getString("email");
 
                 return new User(usernameResult, passwordResult, emailResult);
             }
