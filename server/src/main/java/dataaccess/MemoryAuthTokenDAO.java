@@ -1,7 +1,6 @@
 package dataaccess;
 
 import model.AuthToken;
-import model.User;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,8 +17,8 @@ public class MemoryAuthTokenDAO implements AuthTokenDAO{
     }
 
     @Override
-    public AuthToken getAuthToken(String token) {
-        return authTokenMap.get(token);
+    public AuthToken getAuthToken(String authToken) {
+        return authTokenMap.get(authToken);
     }
 
     @Override

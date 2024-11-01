@@ -1,24 +1,22 @@
 package dataaccess;
-import com.mysql.cj.protocol.Resultset;
-import model.User;
+
+import model.AuthToken;
 
 import java.sql.*;
 
 import static dataaccess.DatabaseManager.getConnection;
 
-public class SQLUserDAO implements UserDAO{
+public class SQLAuthTokenDAO implements AuthTokenDAO{
     @Override
-    public void createUser(User user) throws DataAccessException {
-        String sql_statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+    public void createAuthToken(AuthToken authToken) throws DataAccessException {
+        String sql_statement = "INSERT INTO auth_tokens (auth_token, username) VALUES (?, ?, ?)";
         try (Connection connection = getConnection()) {
             // make the preparedStatement
             PreparedStatement preparedStatement = connection.prepareStatement(sql_statement,
                     Statement.RETURN_GENERATED_KEYS);
-
             // set the values to insert
-            preparedStatement.setString(1, user.getUsername());
-            preparedStatement.setString(2, user.getPassword());
-            preparedStatement.setString(3, user.getEmail());
+            preparedStatement.setString(1, authToken.getToken());
+            preparedStatement.setString(2, authToken.username());
             // execute
             preparedStatement.executeUpdate();
         }
@@ -28,18 +26,17 @@ public class SQLUserDAO implements UserDAO{
     }
 
     @Override
-    public User getUser(String username) throws DataAccessException {
-        String sql_statement = "SELECT username, password, email FROM users";
+    public AuthToken getAuthToken(String authToken) throws DataAccessException {
+        String sql_statement = "SELECT auth_token, username FROM auth_tokens WHERE auth_token = " + authToken;
         try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
             ResultSet resultSet = preparedStatement.getResultSet();
 
             if (resultSet.next()) {
+                String authTokenResult = resultSet.getString("auth_token");
                 String usernameResult = resultSet.getString("username");
-                String passwordResult = resultSet.getString("username");
-                String emailResult = resultSet.getString("username");
 
-                return new User(usernameResult, passwordResult, emailResult);
+                return new AuthToken(authTokenResult, usernameResult);
             }
         }
         catch (SQLException er) {
@@ -49,8 +46,20 @@ public class SQLUserDAO implements UserDAO{
     }
 
     @Override
-    public void clearUsers() throws DataAccessException {
-        String sql_statement = "DELETE FROM users";
+    public void deleteAuthToken(String authToken) throws DataAccessException {
+        String sql_statement = "DELETE FROM auth_tokens WHERE auth_token = " + authToken;
+        try (Connection connection = getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException er) {
+            throw new DataAccessException("Error " + er.getMessage());
+        }
+    }
+
+    @Override
+    public void clearAuthTokens() throws DataAccessException {
+        String sql_statement = "DELETE FROM auth_tokens";
         try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
             preparedStatement.executeUpdate();
