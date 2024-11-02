@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.*;
 import exception.ResponseException;
+import org.mindrot.jbcrypt.BCrypt;
 import protocol.LoginRequest;
 import protocol.LoginResponse;
 
@@ -24,7 +25,7 @@ public class LoginService extends Service {
                 throw new ResponseException(401, "Error: User doesn't exist");
             }
             // invalid password?
-            else if (!Objects.equals(loginRequest.password(), user.getPassword())) {
+            else if (!BCrypt.checkpw(loginRequest.password(), user.getPassword())) {
                 throw new ResponseException(401, "Error: Invalid password");
             }
             // login

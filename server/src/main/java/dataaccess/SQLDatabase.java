@@ -49,36 +49,37 @@ public class SQLDatabase implements Database {
             }
         }
         catch (SQLException er) {
-            throw new DataAccessException("Error: issue in configureDatabase()");
+            throw new DataAccessException("Error: issue in configureDatabase(): " + er.getMessage());
         }
 
     }
     private final String[] createTableStatements = {
             """
-             CREATE TABLE IF NOT EXISTS `users` (
+             CREATE TABLE IF NOT EXISTS users (
               `username` varchar(255) NOT NULL,
               `password` varchar(255) DEFAULT NULL,
               `email` varchar(255) DEFAULT NULL,
               PRIMARY KEY (`username`)
-              )
+              );
             """,
 
             """
-            CREATE TABLE IF NOT EXISTS `games` (
+            CREATE TABLE IF NOT EXISTS games (
               `game_id` int NOT NULL AUTO_INCREMENT,
-              `game_name` varchar(255) DEFAULT NULL,
+              `game_name` varchar(255) NOT NULL,
               `white_username` varchar(255) DEFAULT NULL,
               `black_username` varchar(255) DEFAULT NULL,
-              'game_state' blob DEFAULT NULL,
+              `game_state` blob NOT NULL, -- Use backticks for column names
               PRIMARY KEY (`game_id`)
-              )
+            );
+            
             """,
 
             """
-            CREATE TABLE IF NOT EXISTS `auth_tokens` (
+            CREATE TABLE IF NOT EXISTS auth_tokens (
               `auth_token` varchar(255) DEFAULT NULL,
               `username` varchar(255) DEFAULT NULL
-            )
+            );
             """
     };
 }

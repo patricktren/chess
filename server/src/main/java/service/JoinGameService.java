@@ -39,8 +39,8 @@ public class JoinGameService extends Service{
                 throw new ResponseException(400, "Error: invalid player color");
             }
             // verify game has the spot open the player is trying to take
-            if ((Objects.equals(joinGameRequest.playerColor(), ChessGame.TeamColor.WHITE) && game.whiteUsername() != null)
-                    || (Objects.equals(joinGameRequest.playerColor(), ChessGame.TeamColor.BLACK) && game.blackUsername() != null)) {
+            if ((Objects.equals(joinGameRequest.playerColor(), ChessGame.TeamColor.WHITE) && game.whiteUsername() != null && !(game.whiteUsername().equals("null")))
+                    || (Objects.equals(joinGameRequest.playerColor(), ChessGame.TeamColor.BLACK) && game.blackUsername() != null && !(game.blackUsername().equals("null")))) {
                 throw new ResponseException(403, "Error: already taken");
             }
 

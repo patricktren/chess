@@ -3,6 +3,7 @@ package service;
 import dataaccess.*;
 import exception.ResponseException;
 import model.User;
+import org.mindrot.jbcrypt.BCrypt;
 import protocol.RegisterRequest;
 import protocol.RegisterResponse;
 
@@ -39,7 +40,8 @@ public class RegisterService extends Service {
                 throw new ResponseException(403, "Error: username already taken");
             } else {
                 // create the user object
-                var newUser = new User(registerRequest.username(), registerRequest.password(), registerRequest.email());
+                String hashedPassword = BCrypt.hashpw(registerRequest.password(), BCrypt.gensalt());
+                var newUser = new User(registerRequest.username(), hashedPassword, registerRequest.email());
                 userDAO.createUser(newUser);
                 // create auth & log in the new user
                 return new RegisterResponse(newUser.getUsername(), createAuthToken(newUser.username()).getToken());
