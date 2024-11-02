@@ -33,7 +33,7 @@ public class AuthTokenDAOTests {
     public void init() throws DataAccessException {
         database = new SQLDatabase();
         database.clearDatabase();
-        sqlAuthTokenDAO = database.sqlAuthTokenDAO;
+        sqlAuthTokenDAO = (SQLAuthTokenDAO) database.getAuthTokenDAO();
         service = new RegisterService(database);
 
         validAuthTokenStr = UUID.randomUUID().toString();

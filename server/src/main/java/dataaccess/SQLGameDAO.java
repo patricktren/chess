@@ -63,7 +63,12 @@ public class SQLGameDAO implements GameDAO{
 
                 ChessGame gameStateResult = new Gson().fromJson(serializedGameStateResult, ChessGame.class);
 
-                return new Game(gameIDResult, gameNameResult, whiteUsernameResult, blackUsernameResult, gameStateResult);
+                // set null values to empty strings
+                if (gameNameResult != null && gameNameResult.equals("null")) {gameNameResult = null;}
+                if (whiteUsernameResult != null && whiteUsernameResult.equals("null")) {whiteUsernameResult = null;}
+                if (blackUsernameResult != null && blackUsernameResult.equals("null")) {blackUsernameResult = null;}
+
+                return new Game(gameIDResult, gameNameResult, whiteUsernameResult, blackUsernameResult, null);
             }
             else {
                 return null;

@@ -6,9 +6,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class SQLDatabase implements Database {
-    SQLUserDAO sqlUserDAO;
-    SQLAuthTokenDAO sqlAuthTokenDAO;
-    SQLGameDAO sqlGameDAO;
+    final private SQLUserDAO sqlUserDAO;
+    final private SQLAuthTokenDAO sqlAuthTokenDAO;
+    final private SQLGameDAO sqlGameDAO;
 
 
     public SQLDatabase() throws DataAccessException {
