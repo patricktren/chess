@@ -47,11 +47,11 @@ public class JoinGameService extends Service{
             // join game
             String username = authTokenDAO.getAuthToken(joinGameRequest.authToken()).getUsername();
             if (joinGameRequest.playerColor() == ChessGame.TeamColor.WHITE) {
-                Game updatedGame = new Game(game.gameID(), game.gameName(), username, game.blackUsername());
+                Game updatedGame = new Game(game.gameID(), game.gameName(), username, game.blackUsername(), game.gameState());
                 gameDAO.updateGame(updatedGame);
             }
             else {
-                Game updatedGame = new Game(game.gameID(), game.gameName(), game.whiteUsername(), username);
+                Game updatedGame = new Game(game.gameID(), game.gameName(), game.whiteUsername(), username, game.gameState());
                 gameDAO.updateGame(updatedGame);
             }
             return new JoinGameResponse();

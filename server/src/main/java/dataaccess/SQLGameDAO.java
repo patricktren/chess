@@ -1,5 +1,7 @@
 package dataaccess;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import model.Game;
 import model.User;
 
@@ -31,7 +33,7 @@ public class SQLGameDAO implements GameDAO{
 
     @Override
     public Game getGame(Integer gameID) throws DataAccessException {
-        String sql_statement = "SELECT game_id, game_name, white_username, black_username FROM games WHERE game_id = '" + gameID + "';";
+        String sql_statement = "SELECT game_id, game_name, white_username, black_username, game_state FROM games WHERE game_id = '" + gameID + "';";
         try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
             preparedStatement.executeQuery();
@@ -42,8 +44,11 @@ public class SQLGameDAO implements GameDAO{
                 String gameNameResult = resultSet.getString("game_name");
                 String whiteUsernameResult = resultSet.getString("white_username");
                 String blackUsernameResult = resultSet.getString("black_username");
+                String serializedGameStateResult = resultSet.getString("game_state");
 
-                return new Game(gameIDResult, gameNameResult, whiteUsernameResult, blackUsernameResult);
+                ChessGame gameStateResult = new Gson().fromJson(serializedGameStateResult, ChessGame.class);
+
+                return new Game(gameIDResult, gameNameResult, whiteUsernameResult, blackUsernameResult, gameStateResult);
             }
             else {
                 throw new DataAccessException("Error: game does not exist");
@@ -74,7 +79,7 @@ public class SQLGameDAO implements GameDAO{
                 if (whiteUsernameResult == null) {whiteUsernameResult = "";}
                 if (blackUsernameResult == null) {blackUsernameResult = "";}
 
-                games.add(new Game(gameIDResult, gameNameResult, whiteUsernameResult, blackUsernameResult));
+                games.add(new Game(gameIDResult, gameNameResult, whiteUsernameResult, blackUsernameResult, null));
             }
             return games;
         }
@@ -85,8 +90,8 @@ public class SQLGameDAO implements GameDAO{
 
     @Override
     public void updateGame(Game game) throws DataAccessException {
-        String sql_statement = String.format("UPDATE games SET game_id = %d, game_name = '%s', white_username = '%s', black_username = '%s' WHERE game_id = %d",
-                game.gameID(), game.gameName(), game.whiteUsername(), game.blackUsername(), game.gameID());
+        String sql_statement = String.format("UPDATE games SET game_id = %d, game_name = '%s', white_username = '%s', black_username = '%s', game_state = '%s' WHERE game_id = %d",
+                game.gameID(), game.gameName(), game.whiteUsername(), game.blackUsername(), new Gson().toJson(game.gameState()), game.gameID());
         try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
             preparedStatement.executeUpdate();

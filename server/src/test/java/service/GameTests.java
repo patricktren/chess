@@ -89,7 +89,7 @@ public class GameTests {
     @Test
     public void getGamesSuccess() throws ResponseException {
         ArrayList<Game> games = new ArrayList<>();
-        games.add(new Game(1010, null, null, "my new game"));
+        games.add(new Game(1010, "my new game", null, null, new ChessGame()));
 
 
         // register user
@@ -114,7 +114,7 @@ public class GameTests {
     @Test
     public void getGamesInvalidAuth() throws ResponseException {
         ArrayList<Game> games = new ArrayList<>();
-        games.add(new Game(1010, null, null, "my new game"));
+        games.add(new Game(1010, "my new game", null, null, new ChessGame()));
 
 
         // register user
