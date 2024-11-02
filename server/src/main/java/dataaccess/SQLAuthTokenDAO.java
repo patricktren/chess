@@ -9,10 +9,10 @@ import static dataaccess.DatabaseManager.getConnection;
 public class SQLAuthTokenDAO implements AuthTokenDAO{
     @Override
     public void createAuthToken(AuthToken authToken) throws DataAccessException {
-        String sql_statement = "INSERT INTO auth_tokens (auth_token, username) VALUES (?, ?)";
+        String sqlStatement = "INSERT INTO auth_tokens (auth_token, username) VALUES (?, ?)";
         try (Connection connection = getConnection()) {
             // make the preparedStatement
-            PreparedStatement preparedStatement = connection.prepareStatement(sql_statement,
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement,
                     Statement.RETURN_GENERATED_KEYS);
             // set the values to insert
             preparedStatement.setString(1, authToken.getToken());
@@ -27,9 +27,9 @@ public class SQLAuthTokenDAO implements AuthTokenDAO{
 
     @Override
     public AuthToken getAuthToken(String authToken) throws DataAccessException {
-        String sql_statement = "SELECT auth_token, username FROM auth_tokens WHERE auth_token = '" + authToken + "';";
+        String sqlStatement = "SELECT auth_token, username FROM auth_tokens WHERE auth_token = '" + authToken + "';";
         try (Connection connection = getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
             preparedStatement.executeQuery();
             ResultSet resultSet = preparedStatement.getResultSet();
 
@@ -50,9 +50,9 @@ public class SQLAuthTokenDAO implements AuthTokenDAO{
 
     @Override
     public void deleteAuthToken(String authToken) throws DataAccessException {
-        String sql_statement = "DELETE FROM auth_tokens WHERE auth_token = '" + authToken + "';";
+        String sqlStatement = "DELETE FROM auth_tokens WHERE auth_token = '" + authToken + "';";
         try (Connection connection = getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
             preparedStatement.executeUpdate();
         }
         catch (SQLException er) {
@@ -62,9 +62,9 @@ public class SQLAuthTokenDAO implements AuthTokenDAO{
 
     @Override
     public void clearAuthTokens() throws DataAccessException {
-        String sql_statement = "DELETE FROM auth_tokens";
+        String sqlStatement = "DELETE FROM auth_tokens";
         try (Connection connection = getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
             preparedStatement.executeUpdate();
         }
         catch (SQLException er) {

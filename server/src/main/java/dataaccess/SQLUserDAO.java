@@ -9,10 +9,10 @@ import static dataaccess.DatabaseManager.getConnection;
 public class SQLUserDAO implements UserDAO{
     @Override
     public void createUser(User user) throws DataAccessException {
-        String sql_statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+        String sqlStatement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
         try (Connection connection = getConnection()) {
             // make the preparedStatement
-            PreparedStatement preparedStatement = connection.prepareStatement(sql_statement,
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement,
                     Statement.RETURN_GENERATED_KEYS);
 
             // set the values to insert
@@ -29,9 +29,9 @@ public class SQLUserDAO implements UserDAO{
 
     @Override
     public User getUser(String username) throws DataAccessException {
-        String sql_statement = "SELECT username, password, email FROM users WHERE username = '" + username + "';";
+        String sqlStatement = "SELECT username, password, email FROM users WHERE username = '" + username + "';";
         try (Connection connection = getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
             preparedStatement.executeQuery();
             ResultSet resultSet = preparedStatement.getResultSet();
 
@@ -53,9 +53,9 @@ public class SQLUserDAO implements UserDAO{
 
     @Override
     public void clearUsers() throws DataAccessException {
-        String sql_statement = "DELETE FROM users";
+        String sqlStatement = "DELETE FROM users";
         try (Connection connection = getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
             preparedStatement.executeUpdate();
         }
         catch (SQLException er) {
