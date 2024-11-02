@@ -1,14 +1,9 @@
 package dataaccess;
 
-import exception.ResponseException;
 import model.AuthToken;
-import model.Game;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import protocol.GetGamesRequest;
-import protocol.GetGamesResponse;
-import service.GetGamesService;
 import service.RegisterService;
 import service.Service;
 
@@ -16,7 +11,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.UUID;
 
 import static dataaccess.DatabaseManager.getConnection;
@@ -36,8 +30,8 @@ public class AuthTokenDAOTests {
         sqlAuthTokenDAO = (SQLAuthTokenDAO) database.getAuthTokenDAO();
         service = new RegisterService(database);
 
+        // create valid user
         validAuthTokenStr = UUID.randomUUID().toString();
-        // create in sql
         sqlAuthTokenDAO.createAuthToken(new AuthToken(validAuthTokenStr, "user1"));
     }
 
@@ -108,9 +102,4 @@ public class AuthTokenDAOTests {
             throw new DataAccessException("Error " + er.getMessage());
         }
     }
-
-
-
-
-
 }

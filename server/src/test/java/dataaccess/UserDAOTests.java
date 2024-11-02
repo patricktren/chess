@@ -1,94 +1,72 @@
 package dataaccess;
 
-import dataaccess.MemoryDatabase;
 import exception.ResponseException;
 import model.User;
 import org.junit.jupiter.api.*;
 import protocol.*;
-import service.LoginService;
-import service.LogoutService;
-import service.RegisterService;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import static dataaccess.DatabaseManager.getConnection;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserDAOTests {
     private static SQLDatabase database;
+    private static SQLUserDAO sqlUserDAO;
+
+    private static RegisterResponse registerResponse;
+    private static User newUser;
 
     @BeforeEach
-    public void init() throws DataAccessException {
+    public void init() throws DataAccessException, ResponseException {
         database = new SQLDatabase();
+        sqlUserDAO = (SQLUserDAO) database.getUserDAO();
         database.clearDatabase();
+
+        // register user
+        newUser = new User("coolsammyo", "1cat2cat", "ree@gmail.com");
+        sqlUserDAO.createUser(newUser);
     }
 
     @Test
-    public void registerUserSuccess() throws ResponseException {
-        User newUser = new User("coolsammyo", "1cat2cat", "ree@gmail.com");
-        var registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
-
-        String expectedResult = newUser.getUsername();
-        String actualResult = new RegisterService(database).registerUser(registerRequest).username();
-
-        Assertions.assertEquals(expectedResult, actualResult);
+    public void createUserSuccess() throws DataAccessException {
+        Assertions.assertNotNull(sqlUserDAO.getUser(newUser.username()));
     }
 
     @Test
-    public void registerUserInvalidUsername() {
-        var registerRequest = new RegisterRequest("", "ree", "ree@gmail.com");
-        Assertions.assertThrows(ResponseException.class, () -> {
-            var actualResult = new RegisterService(database).registerUser(registerRequest);
+    public void createUserNullUsername() {
+        User invalidUser = new User(null, "1cat2cat", "ree@gmail.com");
+        Assertions.assertThrows(DataAccessException.class, () -> {
+            sqlUserDAO.createUser(invalidUser);
         });
     }
 
     @Test
-    public void loginUserDoesNotExist() {
-        var loginRequest = new LoginRequest("hello", "ree");
-        Assertions.assertThrows(ResponseException.class, () -> {
-            var actualResult = new LoginService(database).loginUser(loginRequest);
-        });
+    public void getUserSuccess() throws ResponseException, DataAccessException {
+        Assertions.assertEquals(newUser, sqlUserDAO.getUser(newUser.username()));
+    }
+    @Test
+    public void getUserDoesNotExist() throws DataAccessException {
+        Assertions.assertNull(sqlUserDAO.getUser(""));
     }
 
     @Test
-    public void loginUserExists() throws ResponseException {
-        // register user
-        User newUser = new User("coolsammyo", "1cat2cat", "ree@gmail.com");
-        var registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
-        String username = new RegisterService(database).registerUser(registerRequest).username();
+    public void clearUsersSuccess() throws DataAccessException {
+        sqlUserDAO.clearUsers();
+        String sqlStatement = "SELECT * FROM users;";
+        try (Connection connection = getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
+            preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.getResultSet();
 
-        // assertions
-        String expectedResultUsername = "coolsammyo";
-
-        // login
-        var loginRequest = new LoginRequest(newUser.getUsername(), newUser.getPassword());
-        var loginResult = new LoginService(database).loginUser(loginRequest);
-
-        // assert
-        Assertions.assertFalse(loginResult.authToken().isBlank());
-        Assertions.assertEquals(loginResult.username(), expectedResultUsername);
-    }
-
-    @Test
-    public void logoutSuccess() throws ResponseException {
-        // register user
-        User newUser = new User("coolsammyo", "1cat2cat", "ree@gmail.com");
-        var registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
-        RegisterResponse registerResponse = new RegisterService(database).registerUser(registerRequest);
-
-        // logoutUser user
-        var logoutResult = new LogoutService(database).logoutUser(new LogoutRequest(registerResponse.authToken()));
-        var expectedResult = new LogoutResponse();
-        Assertions.assertEquals(expectedResult, logoutResult);
-    }
-
-    @Test
-    public void logoutEmptyToken() throws ResponseException {
-        // register user
-        User newUser = new User("coolsammyo", "1cat2cat", "ree@gmail.com");
-        var registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
-        RegisterResponse registerResponse = new RegisterService(database).registerUser(registerRequest);
-
-        // assert
-        Assertions.assertThrows(ResponseException.class, () -> {
-            // logoutUser
-            var logoutResult = new LogoutService(database).logoutUser(new LogoutRequest(""));
-        });
+            // Assert
+            Assertions.assertFalse(resultSet.next());
+        }
+        catch (SQLException er) {
+            throw new DataAccessException("Error " + er.getMessage());
+        }
     }
 }

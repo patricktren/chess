@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import protocol.*;
-import service.CreateGameService;
-import service.GetGamesService;
 import service.RegisterService;
 
 import java.sql.Connection;
@@ -37,7 +35,6 @@ public class GameDAOTests {
         newUser = new User("coolsammyo", "1cat2cat", "ree@gmail.com");
         RegisterRequest registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
         registerResponse = new RegisterService(database).registerUser(registerRequest);
-
     }
 
     @Test
