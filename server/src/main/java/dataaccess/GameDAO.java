@@ -12,7 +12,7 @@ import java.util.Set;
 public interface GameDAO {
     public Integer createGame(Game newGame) throws DataAccessException;
     public Game getGame(Integer gameID) throws DataAccessException;
-    public Collection<Game> getGames(String token) throws DataAccessException;
+    public ArrayList<Game> getGames(String token) throws DataAccessException;
     public void updateGame(Game game) throws DataAccessException;
     public void clearGames() throws DataAccessException;
     public Integer getNextGameID();

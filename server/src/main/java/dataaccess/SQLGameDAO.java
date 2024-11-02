@@ -75,14 +75,14 @@ public class SQLGameDAO implements GameDAO{
     }
 
     @Override
-    public Set<Game> getGames(String token) throws DataAccessException {
+    public ArrayList<Game> getGames(String token) throws DataAccessException {
         String sql_statement = "SELECT game_id, game_name, white_username, black_username FROM games;";
         try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
             preparedStatement.executeQuery();
             ResultSet resultSet = preparedStatement.getResultSet();
 
-            Set<Game> games = new HashSet<>();
+            ArrayList<Game> games = new ArrayList<>();
             while (resultSet.next()) {
                 Integer gameIDResult = resultSet.getInt("game_id");
                 String gameNameResult = resultSet.getString("game_name");
@@ -96,6 +96,7 @@ public class SQLGameDAO implements GameDAO{
 
                 games.add(new Game(gameIDResult, gameNameResult, whiteUsernameResult, blackUsernameResult, null));
             }
+            Integer ree = games.get(0).gameID();
             return games;
         }
         catch (SQLException er) {
