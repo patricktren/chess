@@ -96,7 +96,6 @@ public class SQLGameDAO implements GameDAO{
 
                 games.add(new Game(gameIDResult, gameNameResult, whiteUsernameResult, blackUsernameResult, null));
             }
-            Integer ree = games.get(0).gameID();
             return games;
         }
         catch (SQLException er) {
