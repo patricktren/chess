@@ -83,15 +83,4 @@ public class SQLDatabase implements Database {
             );
             """
     };
-
-    public boolean mayContainSQLInjection(String input) {
-        String[] sqlKeywords = {"UNION", "SELECT", "INSERT", "UPDATE", "DELETE", "DROP", "EXEC", "OR 1=1"};
-        for (String keyword : sqlKeywords) {
-            if (input.toUpperCase().contains(keyword)) {
-                return true; // Potential SQL injection detected
-            }
-        }
-        return false; // Input is likely safe
-    }
-
 }
