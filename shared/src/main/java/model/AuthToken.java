@@ -1,8 +1,8 @@
 package model;
 
-public record AuthToken(String token, String username) {
+public record AuthToken(String authToken, String username) {
     public String getToken() {
-        return token;
+        return authToken;
     }
     public String getUsername() {
         return username;

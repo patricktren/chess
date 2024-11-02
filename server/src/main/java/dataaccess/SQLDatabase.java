@@ -77,9 +77,21 @@ public class SQLDatabase implements Database {
 
             """
             CREATE TABLE IF NOT EXISTS auth_tokens (
-              `auth_token` varchar(255) DEFAULT NULL,
-              `username` varchar(255) DEFAULT NULL
+              `auth_token` varchar(255) NOT NULL,
+              `username` varchar(255) DEFAULT NULL,
+            PRIMARY KEY (`auth_token`)
             );
             """
     };
+
+    public boolean mayContainSQLInjection(String input) {
+        String[] sqlKeywords = {"UNION", "SELECT", "INSERT", "UPDATE", "DELETE", "DROP", "EXEC", "OR 1=1"};
+        for (String keyword : sqlKeywords) {
+            if (input.toUpperCase().contains(keyword)) {
+                return true; // Potential SQL injection detected
+            }
+        }
+        return false; // Input is likely safe
+    }
+
 }

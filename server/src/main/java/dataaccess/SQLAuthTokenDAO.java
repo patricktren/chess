@@ -27,6 +27,9 @@ public class SQLAuthTokenDAO implements AuthTokenDAO{
 
     @Override
     public AuthToken getAuthToken(String authToken) throws DataAccessException {
+        if (authToken == null || authToken.isBlank()) {
+            throw new DataAccessException("Error: authToken is empty");
+        }
         String sqlStatement = "SELECT auth_token, username FROM auth_tokens WHERE auth_token = '" + authToken + "';";
         try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);

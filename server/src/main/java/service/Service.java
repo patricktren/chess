@@ -25,7 +25,7 @@ public abstract class Service {
             throw new ResponseException(500, "Couldn't connect to database");
         }
     }
-    protected AuthToken createAuthToken(String username) throws DataAccessException {
+    public AuthToken createAuthToken(String username) throws DataAccessException {
         while (true) {
             var newAuthToken = new AuthToken(UUID.randomUUID().toString(), username);
             if (authTokenDAO.getAuthToken(newAuthToken.getToken()) != null) {
