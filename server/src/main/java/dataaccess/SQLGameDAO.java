@@ -16,10 +16,10 @@ import static dataaccess.DatabaseManager.getConnection;
 public class SQLGameDAO implements GameDAO{
     @Override
     public Integer createGame(Game newGame) throws DataAccessException {
-        String sqlStatement = "INSERT INTO games (game_name, white_username, black_username, gameState) VALUES (?, ?, ?, ?)";
+        String sql_statement = "INSERT INTO games (game_name, white_username, black_username, game_state) VALUES (?, ?, ?, ?)";
         try (Connection connection = getConnection()) {
             // make the preparedStatement
-            PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement,
+            PreparedStatement preparedStatement = connection.prepareStatement(sql_statement,
                     Statement.RETURN_GENERATED_KEYS);
 
             // set the values to insert
@@ -48,9 +48,9 @@ public class SQLGameDAO implements GameDAO{
 
     @Override
     public Game getGame(Integer gameID) throws DataAccessException {
-        String sqlStatement = "SELECT game_id, game_name, white_username, black_username, gameState FROM games WHERE game_id = '" + gameID + "';";
+        String sql_statement = "SELECT game_id, game_name, white_username, black_username, game_state FROM games WHERE game_id = '" + gameID + "';";
         try (Connection connection = getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
+            PreparedStatement preparedStatement = connection.prepareStatement(sql_statement);
             preparedStatement.executeQuery();
             ResultSet resultSet = preparedStatement.getResultSet();
 
@@ -59,7 +59,7 @@ public class SQLGameDAO implements GameDAO{
                 String gameNameResult = resultSet.getString("game_name");
                 String whiteUsernameResult = resultSet.getString("white_username");
                 String blackUsernameResult = resultSet.getString("black_username");
-                String serializedGameStateResult = resultSet.getString("gameState");
+                String serializedGameStateResult = resultSet.getString("game_state");
 
                 ChessGame gameStateResult = new Gson().fromJson(serializedGameStateResult, ChessGame.class);
 
@@ -106,8 +106,7 @@ public class SQLGameDAO implements GameDAO{
     @Override
     public void updateGame(Game game) throws DataAccessException {
         var gameName = game.gameName().replace("'", "''");
-        String sqlStatement = String.format("UPDATE games SET game_id = %d, game_name = '%s', white_username = '%s', black_username = '%s', " +
-                        "gameState = '%s' WHERE game_id = %d",
+        String sqlStatement = String.format("UPDATE games SET game_id = %d, game_name = '%s', white_username = '%s', black_username = '%s', game_state = '%s' WHERE game_id = %d",
                 game.gameID(), gameName, game.whiteUsername(), game.blackUsername(), new Gson().toJson(game.gameState()), game.gameID());
         try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
