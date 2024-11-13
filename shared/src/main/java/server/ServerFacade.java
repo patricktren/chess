@@ -6,15 +6,24 @@ import java.io.*;
 import java.net.*;
 
 import exception.ResponseException;
+import model.*;
 
 public class ServerFacade {
-    private final String serverUrl = "";
+    private final String serverUrl;
 
     public ServerFacade(String serverUrl) {
-        serverUrl = serverUrl;
+        this.serverUrl = serverUrl;
     }
 
+    public AuthToken register(User user) throws ResponseException {
+        var path = "/user";
+        return this.makeRequest("POST", path, user, AuthToken.class);
+    }
 
+    public AuthToken login(User user) throws ResponseException {
+        var path = "/session";
+        return this.makeRequest("POST", path, user, AuthToken.class);
+    }
 
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
