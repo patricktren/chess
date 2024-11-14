@@ -3,10 +3,7 @@ package ui;
 import chess.ChessGame;
 import model.AuthToken;
 import model.Game;
-import protocol.CreateGameRequest;
-import protocol.GetGamesRequest;
-import protocol.GetGamesResponse;
-import protocol.JoinGameRequest;
+import protocol.*;
 import server.ServerFacade;
 
 import java.lang.reflect.Array;
@@ -35,7 +32,7 @@ public class PostloginClient {
                 case "list" -> list(authToken);
                 case "create" -> create(params, authToken);
                 case "join" -> join(params, authToken);
-//                case "logout" -> logout(authToken);
+                case "logout" -> logout(authToken);
                 case "quit" -> "quit";
                 default -> postloginRepl.helpPrompt();
             };
@@ -100,12 +97,12 @@ public class PostloginClient {
             };
         }
     }
-//    private String logout(String authToken) {
-//        try {
-//            GetGamesResponse gamesResponse = server.logout(new GetGamesRequest(authToken));
-//            return "";
-//        } catch (Throwable e) {
-//            return e.getMessage();
-//        }
-//    }
+    private String logout(String authToken) {
+        try {
+            LogoutResponse gamesResponse = server.logout(new LogoutRequest(authToken));
+            return "logout";
+        } catch (Throwable e) {
+            return e.getMessage();
+        }
+    }
 }

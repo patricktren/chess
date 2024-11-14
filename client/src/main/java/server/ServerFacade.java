@@ -41,10 +41,10 @@ public class ServerFacade {
         return this.makeRequest("PUT", path, joinGameRequest, joinGameRequest.authToken(), JoinGameResponse.class);
     }
 
-//    public LogoutResponse logout(LogoutRequest logoutRequest) throws ResponseException {
-//        var path = "/session";
-//        return this.makeRequest("DELETE", path, null, logoutRequest.authToken(), LogoutResponse.class);
-//    }
+    public LogoutResponse logout(LogoutRequest logoutRequest) throws ResponseException {
+        var path = "/session";
+        return this.makeRequest("DELETE", path, null, logoutRequest.authToken(), LogoutResponse.class);
+    }
 
 
     private <T> T makeRequest(String method, String path, Object requestBody, String requestHeader, Class<T> responseClass) throws ResponseException {
