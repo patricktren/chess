@@ -1,12 +1,10 @@
 package server;
 
 import dataaccess.Database;
-import dataaccess.MemoryDatabase;
 import dataaccess.SQLDatabase;
 import handlers.*;
 
 import exception.ResponseException;
-import protocol.JoinGameRequest;
 import spark.*;
 
 public class Server {
@@ -66,5 +64,6 @@ public class Server {
 
     private void exceptionHandler(ResponseException ex, Request req, Response res) {
         res.status(ex.getStatusCode());
+        System.out.println("Error in reading request: " + ex.getMessage());
     }
 }

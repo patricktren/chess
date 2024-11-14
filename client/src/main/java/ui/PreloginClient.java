@@ -2,11 +2,11 @@ package ui;
 
 import model.AuthToken;
 import model.User;
+import protocol.LoginRequest;
+import protocol.RegisterRequest;
 import server.ServerFacade;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 public class PreloginClient {
     private final String serverUrl;
@@ -34,12 +34,16 @@ public class PreloginClient {
             return e.getMessage();
         }
     }
+
     private String login(String[] params) {
         try {
             String username = params[0];
             String password = params[1];
-            AuthToken authToken = server.login(new User(username, password, null));
-            return authToken.username();
+            String authToken = server.login(new LoginRequest(username, password)).authToken();
+            if (authToken != null) {
+                new PostloginRepl(server, authToken).run();
+            }
+            return "";
         } catch (Throwable e) {
             return e.getMessage();
         }
@@ -50,8 +54,11 @@ public class PreloginClient {
             String username = params[0];
             String password = params[1];
             String email = params[2];
-            AuthToken authToken = server.register(new User(username, password, email));
-            return authToken.username();
+            String authToken = server.register(new RegisterRequest(username, password, email)).authToken();
+            if (authToken != null) {
+                new PostloginRepl(server, authToken).run();
+            }
+            return "";
         } catch (Throwable e) {
             return e.getMessage();
         }

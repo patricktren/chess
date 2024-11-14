@@ -2,11 +2,9 @@ package handlers;
 
 import com.google.gson.Gson;
 import dataaccess.Database;
-import dataaccess.MemoryDatabase;
 import exception.ResponseException;
 import model.User;
 import protocol.RegisterRequest;
-import protocol.RegisterResponse;
 import service.RegisterService;
 import spark.Request;
 import spark.Response;

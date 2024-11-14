@@ -6,8 +6,6 @@ import org.mindrot.jbcrypt.BCrypt;
 import protocol.LoginRequest;
 import protocol.LoginResponse;
 
-import java.util.Objects;
-
 public class LoginService extends Service {
     private final UserDAO userDAO;
 

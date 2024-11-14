@@ -1,7 +1,6 @@
 package service;
 
 import chess.ChessGame;
-import dataaccess.Database;
 import dataaccess.MemoryDatabase;
 import exception.ResponseException;
 import model.Game;
@@ -9,7 +8,6 @@ import model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import protocol.*;
 
 import java.util.ArrayList;
 

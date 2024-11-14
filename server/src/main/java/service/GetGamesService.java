@@ -7,8 +7,6 @@ import dataaccess.GameDAO;
 import exception.ResponseException;
 import protocol.GetGamesRequest;
 import protocol.GetGamesResponse;
-import protocol.LogoutRequest;
-import protocol.LogoutResponse;
 
 public class GetGamesService extends Service{
     private final GameDAO gameDAO;

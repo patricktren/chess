@@ -3,7 +3,6 @@ package handlers;
 import com.google.gson.Gson;
 import dataaccess.Database;
 import exception.ResponseException;
-import model.User;
 import protocol.LoginResponse;
 import service.LoginService;
 

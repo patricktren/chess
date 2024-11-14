@@ -5,10 +5,7 @@ import dataaccess.Database;
 import exception.ResponseException;
 import protocol.GetGamesRequest;
 import protocol.GetGamesResponse;
-import protocol.JoinGameRequest;
-import protocol.JoinGameResponse;
 import service.GetGamesService;
-import service.JoinGameService;
 import spark.Request;
 import spark.Response;
 

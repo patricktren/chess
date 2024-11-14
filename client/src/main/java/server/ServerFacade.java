@@ -7,6 +7,7 @@ import java.net.*;
 
 import exception.ResponseException;
 import model.*;
+import protocol.*;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -15,25 +16,34 @@ public class ServerFacade {
         this.serverUrl = serverUrl;
     }
 
-    public AuthToken register(User user) throws ResponseException {
+    public RegisterResponse register(RegisterRequest registerRequest) throws ResponseException {
         var path = "/user";
-        return this.makeRequest("POST", path, user, AuthToken.class);
+        return this.makeRequest("POST", path, registerRequest, null, RegisterResponse.class);
     }
 
-    public AuthToken login(User user) throws ResponseException {
+    public LoginResponse login(LoginRequest loginRequest) throws ResponseException {
         var path = "/session";
-        return this.makeRequest("POST", path, user, AuthToken.class);
+        return this.makeRequest("POST", path, loginRequest, null, LoginResponse.class);
+    }
+
+    public CreateGameResponse create(CreateGameRequest createRequest) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("POST", path, createRequest, createRequest.authToken(), CreateGameResponse.class);
     }
 
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    private <T> T makeRequest(String method, String path, Object requestBody, String requestHeader, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
 
-            writeBody(request, http);
+            if (requestHeader != null) {
+                http.setRequestProperty("Authorization", requestHeader);
+            }
+
+            writeBody(requestBody, http);
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);

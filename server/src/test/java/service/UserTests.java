@@ -4,7 +4,6 @@ import dataaccess.MemoryDatabase;
 import exception.ResponseException;
 import model.User;
 import org.junit.jupiter.api.*;
-import protocol.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserTests {

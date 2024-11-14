@@ -3,13 +3,9 @@ package handlers;
 import com.google.gson.Gson;
 import dataaccess.Database;
 import exception.ResponseException;
-import model.AuthToken;
 import protocol.CreateGameRequest;
 import protocol.CreateGameResponse;
-import protocol.LogoutRequest;
-import protocol.LogoutResponse;
 import service.CreateGameService;
-import service.LogoutService;
 import spark.Request;
 import spark.Response;
 
