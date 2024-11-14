@@ -31,6 +31,21 @@ public class ServerFacade {
         return this.makeRequest("POST", path, createRequest, createRequest.authToken(), CreateGameResponse.class);
     }
 
+    public GetGamesResponse list(GetGamesRequest getGamesRequest) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("GET", path, null, getGamesRequest.authToken(), GetGamesResponse.class);
+    }
+
+    public JoinGameResponse join(JoinGameRequest joinGameRequest) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("PUT", path, joinGameRequest, joinGameRequest.authToken(), JoinGameResponse.class);
+    }
+
+//    public LogoutResponse logout(LogoutRequest logoutRequest) throws ResponseException {
+//        var path = "/session";
+//        return this.makeRequest("DELETE", path, null, logoutRequest.authToken(), LogoutResponse.class);
+//    }
+
 
     private <T> T makeRequest(String method, String path, Object requestBody, String requestHeader, Class<T> responseClass) throws ResponseException {
         try {
@@ -65,7 +80,7 @@ public class ServerFacade {
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
         var status = http.getResponseCode();
         if (!isSuccessful(status)) {
-            throw new ResponseException(status, "failure: " + status);
+            throw new ResponseException(status, "" + status);
         }
     }
 

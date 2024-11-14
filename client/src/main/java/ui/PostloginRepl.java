@@ -18,9 +18,8 @@ public class PostloginRepl {
 
         Scanner scanner = new Scanner((System.in));
         String result = "";
+        System.out.println(helpPrompt());
         while (!result.equals("logout")) {
-            System.out.println(helpPrompt());
-
             String line = scanner.nextLine();
 
             try {
