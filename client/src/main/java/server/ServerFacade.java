@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import exception.ResponseException;
 import model.*;
@@ -11,6 +13,7 @@ import protocol.*;
 
 public class ServerFacade {
     private final String serverUrl;
+    private HashMap<Integer, Integer> gameIDMap = new HashMap<>();
 
     public ServerFacade(String serverUrl) {
         this.serverUrl = serverUrl;
@@ -33,12 +36,21 @@ public class ServerFacade {
 
     public GetGamesResponse list(GetGamesRequest getGamesRequest) throws ResponseException {
         var path = "/game";
-        return this.makeRequest("GET", path, null, getGamesRequest.authToken(), GetGamesResponse.class);
+        var games = this.makeRequest("GET", path, null, getGamesRequest.authToken(), GetGamesResponse.class);
+
+        ArrayList<Game> gamesList = (ArrayList<Game>) games.games();
+        gameIDMap.clear();
+        for (int i=0; i < gamesList.size(); i++) {
+            Game game = gamesList.get(i);
+            gameIDMap.put(i+1, game.gameID());
+        }
+        return games;
     }
 
     public JoinGameResponse join(JoinGameRequest joinGameRequest) throws ResponseException {
         var path = "/game";
-        return this.makeRequest("PUT", path, joinGameRequest, joinGameRequest.authToken(), JoinGameResponse.class);
+        var joinGameRequestFix = new JoinGameRequest(joinGameRequest.authToken(), joinGameRequest.playerColor(), gameIDMap.get(joinGameRequest.gameID()));
+        return this.makeRequest("PUT", path, joinGameRequestFix, joinGameRequestFix.authToken(), JoinGameResponse.class);
     }
 
     public LogoutResponse logout(LogoutRequest logoutRequest) throws ResponseException {

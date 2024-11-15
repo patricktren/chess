@@ -47,10 +47,10 @@ public class PostloginClient {
             GetGamesResponse gamesResponse = server.list(new GetGamesRequest(authToken));
             String gameString = "";
             ArrayList<Game> games = (ArrayList<Game>) gamesResponse.games();
-            gameIDMap.clear();
+//            gameIDMap.clear();
             for (int i=0; i < games.size(); i++) {
                 Game game = games.get(i);
-                gameIDMap.put(i+1, game.gameID());
+//                gameIDMap.put(i+1, game.gameID());
                 gameString += String.format("%d. Game name: %-8s White: %-8s Black: %-8s\n", i + 1, game.gameName(), game.whiteUsername(), game.blackUsername());
             }
 

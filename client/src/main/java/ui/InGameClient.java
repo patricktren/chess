@@ -43,7 +43,9 @@ public class InGameClient {
     }
 
     private static String redraw() {
-        boardDrawer.drawChessBoard(new ChessBoard(), inGameRepl.getPlayerColor());
+        var board = new ChessBoard();
+        board.resetBoard();
+        boardDrawer.drawChessBoard(board, inGameRepl.getPlayerColor());
         return "";
     }
 
