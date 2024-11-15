@@ -6,6 +6,7 @@ import protocol.*;
 import server.Server;
 import server.ServerFacade;
 import service.CreateGameService;
+import service.LogoutService;
 
 
 public class ServerFacadeTests {
@@ -118,8 +119,28 @@ public class ServerFacadeTests {
         });
     }
 
+    @Test
+    public void logoutSuccess() throws ResponseException {
+        var loginRequest = new LoginRequest("pat", "ree");
+        var loginResponse = serverFacade.login(loginRequest);
 
+        var logoutRequest = new LogoutRequest(loginResponse.authToken());
+        LogoutResponse logoutResponse = serverFacade.logout(logoutRequest);
 
+        Assertions.assertTrue(logoutResponse != null);
+    }
+
+    @Test
+    public void logoutInvalidAuth() throws ResponseException {
+        var loginRequest = new LoginRequest("pat", "ree");
+        var loginResponse = serverFacade.login(loginRequest);
+
+        var logoutRequest = new LogoutRequest("invalidAuth");
+
+        Assertions.assertThrows(ResponseException.class, () -> {
+            LogoutResponse logoutResponse = serverFacade.logout(logoutRequest);
+        });
+    }
 
 
 }
