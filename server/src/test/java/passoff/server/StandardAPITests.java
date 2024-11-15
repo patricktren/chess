@@ -151,7 +151,7 @@ public class StandardAPITests {
     @DisplayName("Invalid Auth Logout")
     public void failLogout() {
         //log out user twice
-        //second logoutUser should fail
+        //second logout should fail
         serverFacade.logout(existingAuth);
         TestResult result = serverFacade.logout(existingAuth);
 
@@ -291,7 +291,7 @@ public class StandardAPITests {
         TestUser userA = new TestUser("a", "A", "a.A");
         TestUser userB = new TestUser("b", "B", "b.B");
         TestUser userC = new TestUser("c", "C", "c.C");
-        
+
         TestAuthResult authA = serverFacade.register(userA);
         TestAuthResult authB = serverFacade.register(userB);
         TestAuthResult authC = serverFacade.register(userC);
@@ -412,7 +412,7 @@ public class StandardAPITests {
         loginResult = serverFacade.login(user);
         assertHttpUnauthorized(loginResult);
 
-        //try to use old auth authToken to list games
+        //try to use old auth token to list games
         TestListResult listResult = serverFacade.listGames(existingAuth);
         assertHttpUnauthorized(listResult);
 
