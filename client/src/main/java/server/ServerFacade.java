@@ -19,10 +19,6 @@ public class ServerFacade {
         this.serverUrl = serverUrl;
     }
 
-    public HashMap<Integer, Integer> getGameMap() {
-        return gameIDMap;
-    }
-
     public RegisterResponse register(RegisterRequest registerRequest) throws ResponseException {
         var path = "/user";
         return this.makeRequest("POST", path, registerRequest, null, RegisterResponse.class);
