@@ -1,24 +1,21 @@
 package ui;
 
 import chess.ChessGame;
-import model.AuthToken;
 import model.Game;
 import protocol.*;
 import server.ServerFacade;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 
-public class PostloginClient {
-    private final PostloginRepl postloginRepl;
+public class PostLoginClient implements Client {
+    private final PostLoginRepl postloginRepl;
     private final ServerFacade server;
 
     private HashMap<Integer, Integer> gameIDMap = new HashMap<>();
 
-    public PostloginClient(ServerFacade server, PostloginRepl postloginRepl) {
+    public PostLoginClient(ServerFacade server, PostLoginRepl postloginRepl) {
         this.postloginRepl = postloginRepl;
         this.server = server;
     }
@@ -51,7 +48,8 @@ public class PostloginClient {
             for (int i=0; i < games.size(); i++) {
                 Game game = games.get(i);
 //                gameIDMap.put(i+1, game.gameID());
-                gameString += String.format("%d. Game name: %-8s White: %-8s Black: %-8s\n", i + 1, game.gameName(), game.whiteUsername(), game.blackUsername());
+                gameString += String.format("%d. Game name: %-8s White: %-8s Black: %-8s\n",
+                        i + 1, game.gameName(), game.whiteUsername(), game.blackUsername());
             }
 
             return gameString;

@@ -1,25 +1,23 @@
 package ui;
 
-import model.AuthToken;
-import model.User;
 import protocol.LoginRequest;
 import protocol.RegisterRequest;
 import server.ServerFacade;
 
 import java.util.Arrays;
 
-public class PreloginClient {
+public class PreLoginClient implements Client{
     private final String serverUrl;
-    private final PreloginRepl preloginRepl;
+    private final PreLoginRepl preloginRepl;
     private final ServerFacade server;
 
-    public PreloginClient(String serverUrl, PreloginRepl preloginRepl) {
+    public PreLoginClient(String serverUrl, PreLoginRepl preloginRepl) {
         this.serverUrl = serverUrl;
         this.preloginRepl = preloginRepl;
         server = new ServerFacade(serverUrl);
     }
 
-    public String evalInput(String input) {
+    public String evalInput(String input, String authToken) {
         try {
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
@@ -41,7 +39,7 @@ public class PreloginClient {
             String password = params[1];
             String authToken = server.login(new LoginRequest(username, password)).authToken();
             if (authToken != null) {
-                new PostloginRepl(server, authToken).run();
+                new PostLoginRepl(server, authToken).run();
             }
             return "";
         } catch (Throwable e) {
@@ -56,7 +54,7 @@ public class PreloginClient {
             String email = params[2];
             String authToken = server.register(new RegisterRequest(username, password, email)).authToken();
             if (authToken != null) {
-                new PostloginRepl(server, authToken).run();
+                new PostLoginRepl(server, authToken).run();
             }
             return "";
         } catch (Throwable e) {

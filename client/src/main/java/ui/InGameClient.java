@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class InGameClient {
+public class InGameClient implements Client {
     private static InGameRepl inGameRepl;
     private final ServerFacade server;
     private static BoardDrawer boardDrawer = new BoardDrawer();
@@ -46,14 +46,6 @@ public class InGameClient {
         var board = new ChessBoard();
         board.resetBoard();
         boardDrawer.drawChessBoard(board, inGameRepl.getPlayerColor());
-        return "";
-    }
-
-    private static String printChessBoard(ChessBoard board) {
-        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-
-
-
         return "";
     }
 }

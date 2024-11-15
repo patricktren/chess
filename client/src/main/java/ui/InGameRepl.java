@@ -6,7 +6,7 @@ import server.ServerFacade;
 
 import java.util.Scanner;
 
-public class InGameRepl {
+public class InGameRepl extends Repl {
     private final InGameClient client;
     private final String authToken;
     private final ChessGame.TeamColor playerColor;
@@ -26,17 +26,7 @@ public class InGameRepl {
         Scanner scanner = new Scanner((System.in));
         String result = "";
         System.out.println(helpPrompt());
-        while (!result.equals("logout")) {
-            String line = scanner.nextLine();
-
-            try {
-                result = client.evalInput(line, authToken);
-                System.out.println(result);
-            } catch (Throwable e) {
-                var msg = e.toString();
-                System.out.println(msg);
-            }
-        }
+        repl(client, "leave", scanner, authToken);
     }
 
     public final String helpPrompt() {

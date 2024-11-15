@@ -8,17 +8,13 @@ import org.junit.jupiter.api.*;
 import protocol.*;
 import server.Server;
 import server.ServerFacade;
-import service.ClearService;
-import service.CreateGameService;
-import service.LogoutService;
-import ui.PostloginClient;
 
 
 public class ServerFacadeTests {
 
     private static Server server;
-    private static String serverUrl = "http://localhost:0";
-    private static ServerFacade serverFacade = new ServerFacade(serverUrl);
+    private static String serverUrl;
+    private static ServerFacade serverFacade;
     private static SQLDatabase database;
 
     @BeforeAll
@@ -27,6 +23,9 @@ public class ServerFacadeTests {
         database.clearDatabase();
         server = new Server();
         var port = server.run(0);
+        serverUrl = "http://localhost:" + port;
+        serverFacade = new ServerFacade(serverUrl);
+
 
         System.out.println("Started Main HTTP server on " + port);
     }

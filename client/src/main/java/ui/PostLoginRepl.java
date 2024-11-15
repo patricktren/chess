@@ -1,15 +1,14 @@
 package ui;
 
-import model.AuthToken;
 import server.ServerFacade;
 
 import java.util.Scanner;
 
-public class PostloginRepl {
-    private final PostloginClient client;
+public class PostLoginRepl extends Repl{
+    private final PostLoginClient client;
     private final String authToken;
-    public PostloginRepl(ServerFacade server, String authToken) {
-        this.client = new PostloginClient(server, this);
+    public PostLoginRepl(ServerFacade server, String authToken) {
+        this.client = new PostLoginClient(server, this);
         this.authToken = authToken;
     }
 
@@ -17,21 +16,12 @@ public class PostloginRepl {
         System.out.println("Welcome to Chess. Select an option below.");
 
         Scanner scanner = new Scanner((System.in));
-        String result = "";
-        System.out.println(helpPrompt());
-        while (!result.equals("logout")) {
-            String line = scanner.nextLine();
 
-            try {
-                result = client.evalInput(line, authToken);
-                System.out.println(result);
-            } catch (Throwable e) {
-                var msg = e.toString();
-                System.out.println(msg);
-            }
-        }
+        System.out.println(helpPrompt());
+        repl(client, "logout", scanner, authToken);
     }
 
+    @Override
     public final String helpPrompt() {
         return """
             Options:
