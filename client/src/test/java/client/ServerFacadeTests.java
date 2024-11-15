@@ -1,24 +1,33 @@
 package client;
 
+import chess.ChessGame;
+import dataaccess.DataAccessException;
+import dataaccess.SQLDatabase;
 import exception.ResponseException;
 import org.junit.jupiter.api.*;
 import protocol.*;
 import server.Server;
 import server.ServerFacade;
+import service.ClearService;
 import service.CreateGameService;
 import service.LogoutService;
+import ui.PostloginClient;
 
 
 public class ServerFacadeTests {
 
     private static Server server;
-    private static String serverUrl = "http://localhost:8080";
+    private static String serverUrl = "http://localhost:0";
     private static ServerFacade serverFacade = new ServerFacade(serverUrl);
+    private static SQLDatabase database;
 
     @BeforeAll
-    public static void init() {
+    public static void init() throws DataAccessException {
+        database = new SQLDatabase();
+        database.clearDatabase();
         server = new Server();
-        var port = server.run(8080);
+        var port = server.run(0);
+
         System.out.println("Started Main HTTP server on " + port);
     }
 
@@ -139,6 +148,37 @@ public class ServerFacadeTests {
 
         Assertions.assertThrows(ResponseException.class, () -> {
             LogoutResponse logoutResponse = serverFacade.logout(logoutRequest);
+        });
+    }
+
+    @Test
+    public void joinGameSuccess() throws ResponseException {
+        var loginRequest = new LoginRequest("pat", "ree");
+        var loginResponse = serverFacade.login(loginRequest);
+
+
+        GetGamesRequest listRequest = new GetGamesRequest(loginResponse.authToken());
+        GetGamesResponse listResponse = serverFacade.list(listRequest);
+
+        JoinGameRequest joinGameRequest = new JoinGameRequest(loginResponse.authToken(), ChessGame.TeamColor.WHITE, 1);
+        JoinGameResponse joinGameResponse = serverFacade.join(joinGameRequest);
+
+        Assertions.assertNotNull(joinGameResponse);
+    }
+
+    @Test
+    public void joinGameInvalidGameNum() throws ResponseException {
+        var loginRequest = new LoginRequest("pat", "ree");
+        var loginResponse = serverFacade.login(loginRequest);
+
+
+        GetGamesRequest listRequest = new GetGamesRequest(loginResponse.authToken());
+        GetGamesResponse listResponse = serverFacade.list(listRequest);
+
+        JoinGameRequest joinGameRequest = new JoinGameRequest(loginResponse.authToken(), ChessGame.TeamColor.WHITE, 50);
+
+        Assertions.assertThrows(ResponseException.class, () -> {
+            JoinGameResponse joinGameResponse = serverFacade.join(joinGameRequest);
         });
     }
 
