@@ -7,6 +7,8 @@ import model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import protocol.RegisterRequest;
+import protocol.RegisterResponse;
 import service.RegisterService;
 
 import java.sql.Connection;

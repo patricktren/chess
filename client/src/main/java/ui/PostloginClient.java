@@ -33,6 +33,7 @@ public class PostloginClient {
                 case "create" -> create(params, authToken);
                 case "join" -> join(params, authToken);
                 case "logout" -> logout(authToken);
+                case "watch" -> watch(params, authToken);
                 case "quit" -> "quit";
                 default -> postloginRepl.helpPrompt();
             };
@@ -104,5 +105,9 @@ public class PostloginClient {
         } catch (Throwable e) {
             return e.getMessage();
         }
+    }
+
+    private String watch(String[] params, String authToken) {
+        return "To be implemented";
     }
 }

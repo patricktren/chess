@@ -3,6 +3,7 @@ package dataaccess;
 import exception.ResponseException;
 import model.User;
 import org.junit.jupiter.api.*;
+import protocol.RegisterResponse;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
