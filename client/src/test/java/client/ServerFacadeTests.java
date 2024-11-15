@@ -93,7 +93,33 @@ public class ServerFacadeTests {
         Assertions.assertThrows(ResponseException.class, () -> {
             var createResponse = serverFacade.create(createRequest);
         });
+        serverFacade.logout(new LogoutRequest(loginResponse.authToken()));
     }
+
+    @Test
+    public void listGameSuccess() throws ResponseException {
+        var loginRequest = new LoginRequest("pat", "ree");
+        var loginResponse = serverFacade.login(loginRequest);
+
+        GetGamesRequest listRequest = new GetGamesRequest(loginResponse.authToken());
+
+        GetGamesResponse listResponse = serverFacade.list(listRequest);
+
+        Assertions.assertTrue(!listResponse.games().isEmpty());
+
+    }
+
+    @Test
+    public void listGameInvalidAuth() throws ResponseException {
+        Assertions.assertThrows(ResponseException.class, () -> {
+            GetGamesRequest listRequest = new GetGamesRequest("invalidAuth");
+
+            GetGamesResponse listResponse = serverFacade.list(listRequest);
+        });
+    }
+
+    @Test
+
 
 
 }
