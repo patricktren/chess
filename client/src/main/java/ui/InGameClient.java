@@ -41,9 +41,12 @@ public class InGameClient {
             return e.getMessage();
         }
     }
-    private static void redraw() {
+
+    private static String redraw() {
         boardDrawer.drawChessBoard(new ChessBoard(), inGameRepl.getPlayerColor());
+        return "";
     }
+
     private static String printChessBoard(ChessBoard board) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
