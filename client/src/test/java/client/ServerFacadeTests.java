@@ -12,7 +12,7 @@ public class ServerFacadeTests {
     public static void init() {
         server = new Server();
         var port = server.run(0);
-        System.out.println("Started test HTTP server on " + port);
+        System.out.println("Started Main HTTP server on " + port);
     }
 
     @AfterAll

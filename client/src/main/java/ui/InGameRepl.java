@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import model.AuthToken;
 import server.ServerFacade;
 
@@ -8,9 +9,15 @@ import java.util.Scanner;
 public class InGameRepl {
     private final InGameClient client;
     private final String authToken;
-    public InGameRepl(ServerFacade server, String authToken) {
+    private final ChessGame.TeamColor playerColor;
+    public InGameRepl(ServerFacade server, String authToken, ChessGame.TeamColor playerColor) {
         this.client = new InGameClient(server, this);
         this.authToken = authToken;
+        this.playerColor = playerColor;
+    }
+
+    public ChessGame.TeamColor getPlayerColor() {
+        return playerColor;
     }
 
     public void run() {

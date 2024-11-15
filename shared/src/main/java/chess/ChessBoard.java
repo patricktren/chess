@@ -15,6 +15,7 @@ public class ChessBoard {
     final static int LOWERBOUND = 1;
     final static int UPPERBOUND = 8;
     public ChessBoard() {
+        resetBoard();
     }
     @Override
     public String toString() {
@@ -28,6 +29,10 @@ public class ChessBoard {
         }
 
         return toPrint;
+    }
+
+    public ChessPiece[][] getSquares() {
+        return squares;
     }
 
     /**

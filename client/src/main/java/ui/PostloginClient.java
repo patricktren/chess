@@ -90,6 +90,7 @@ public class PostloginClient {
                 return "Invalid game ID.";
             }
             server.join(new JoinGameRequest(authToken, playerColor, gameIDMap.get(gameNum)));
+            new InGameRepl(server, authToken, playerColor);
             return "";
         } catch (Throwable e) {
             return switch (Integer.parseInt(e.getMessage())) {
