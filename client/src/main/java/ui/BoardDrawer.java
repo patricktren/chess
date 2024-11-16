@@ -49,9 +49,10 @@ public class BoardDrawer {
         out.print(SET_TEXT_COLOR_BLACK);
         out.print("      ");
         out.print("a" + letterSpacing + "b" + letterSpacing + "c" + "  " + "d" + letterSpacing +
-                "e" + "  " + "f" + letterSpacing + "g" + letterSpacing + "h" + letterSpacing + letterSpacing);
+                "e" + "  " + "f" + letterSpacing + "g" + letterSpacing + "h" + letterSpacing + EMPTY);
         // revert color and print line.
         out.print(RESET_TEXT_COLOR);
+        out.print(RESET_BG_COLOR);
         out.println();
     }
 
@@ -62,6 +63,7 @@ public class BoardDrawer {
 
         // revert color
         out.print(RESET_TEXT_COLOR);
+        out.print(RESET_BG_COLOR);
     }
 
     private void drawRow(ChessPiece[] row, Boolean startsLight) {
@@ -120,5 +122,6 @@ public class BoardDrawer {
             isLight = !isLight;
         }
         out.print(RESET_BG_COLOR);
+        out.print(RESET_TEXT_COLOR);
     }
 }

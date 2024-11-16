@@ -7,6 +7,7 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import exception.Message;
 import exception.ResponseException;
 import model.*;
 import protocol.*;
@@ -49,6 +50,9 @@ public class ServerFacade {
 
     public JoinGameResponse join(JoinGameRequest joinGameRequest) throws ResponseException {
         var path = "/game";
+        if (!gameIDMap.containsKey(joinGameRequest.gameID())) {
+            throw new ResponseException(400, "Invalid game ID");
+        }
         var joinGameRequestFix = new JoinGameRequest(joinGameRequest.authToken(),
                 joinGameRequest.playerColor(), gameIDMap.get(joinGameRequest.gameID()));
         return this.makeRequest("PUT", path, joinGameRequestFix, joinGameRequestFix.authToken(), JoinGameResponse.class);
@@ -92,8 +96,16 @@ public class ServerFacade {
 
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
         var status = http.getResponseCode();
+        Message response = null;
         if (!isSuccessful(status)) {
-            throw new ResponseException(status, "" + status);
+            if (http.getContentLength() < 0) {
+                try (InputStream respBody = http.getErrorStream()) {
+                    InputStreamReader reader = new InputStreamReader(respBody);
+                    response = new Gson().fromJson(reader, Message.class);
+                    throw new ResponseException(status, response.message());
+                }
+            }
+            throw new ResponseException(status, "Unknown error");
         }
     }
 

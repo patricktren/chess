@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import model.Game;
 import protocol.*;
@@ -32,7 +33,7 @@ public class PostLoginClient implements Client {
                 case "logout" -> logout(authToken);
                 case "watch" -> watch(params, authToken);
                 case "quit" -> "quit";
-                default -> postloginRepl.helpPrompt();
+                default -> "Invalid command; refer to the options below:\n" + postloginRepl.helpPrompt();
             };
         } catch (Throwable e) {
             return e.getMessage();
@@ -59,6 +60,9 @@ public class PostLoginClient implements Client {
     }
 
     private String create (String[] params, String authToken) {
+        if (params == null || params.length != 1) {
+            return "Incorrect number of parameters entered; please refer to the help menu.";
+        }
         try {
             String gameName = params[0];
             String gameID = server.create(new CreateGameRequest(authToken, gameName)).gameID().toString();
@@ -69,9 +73,17 @@ public class PostLoginClient implements Client {
     }
 
     private String join(String[] params, String authToken) {
+        if (params == null || params.length != 2) {
+            return "Incorrect number of parameters entered; please refer to the help menu.";
+        }
         try {
             // get game number
-            Integer gameNum = Integer.parseInt(params[0]);
+            Integer gameNum = null;
+            try {
+                gameNum = Integer.parseInt(params[0]);
+            } catch (NumberFormatException e) {
+                return "Invalid game ID; please try again";
+            }
 
             // get player color
             ChessGame.TeamColor playerColor = null;
@@ -80,21 +92,18 @@ public class PostLoginClient implements Client {
             } else if (params[1].equalsIgnoreCase("black")){
                 playerColor = ChessGame.TeamColor.BLACK;
             } else {
-                return "Invalid player color";
+                return "Invalid player color; please try again";
             }
 
-            // join
-            if (!gameIDMap.containsKey(gameNum)) {
-                return "Invalid game ID.";
-            }
-            server.join(new JoinGameRequest(authToken, playerColor, gameIDMap.get(gameNum)));
+            server.join(new JoinGameRequest(authToken, playerColor, gameNum));
             new InGameRepl(server, authToken, playerColor);
+            var draw = new BoardDrawer();
+            var board = new ChessBoard();
+            board.resetBoard();
+            draw.drawChessBoard(board, playerColor);
             return "";
         } catch (Throwable e) {
-            return switch (Integer.parseInt(e.getMessage())) {
-                case 403 -> "Player color taken; please try another game or player color";
-                default -> e.getMessage();
-            };
+            return e.getMessage();
         }
     }
     private String logout(String authToken) {

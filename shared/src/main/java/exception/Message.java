@@ -1,4 +1,4 @@
-package handlers;
+package exception;
 
 public record Message(String message) {
 }

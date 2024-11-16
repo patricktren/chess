@@ -26,7 +26,7 @@ public class PreLoginClient implements Client{
                 case "login" -> "Welcome " + login(params);
                 case "register" -> "Welcome " + register(params);
                 case "quit" -> "quit";
-                default -> preloginRepl.helpPrompt();
+                default -> "Invalid command; refer to the options below:\n" + preloginRepl.helpPrompt();
             };
         } catch (Throwable e) {
             return e.getMessage();
@@ -34,6 +34,9 @@ public class PreLoginClient implements Client{
     }
 
     private String login(String[] params) {
+        if (params == null || params.length != 2) {
+            return "Incorrect number of parameters entered; please refer to the help menu.";
+        }
         try {
             String username = params[0];
             String password = params[1];
@@ -48,6 +51,9 @@ public class PreLoginClient implements Client{
     }
 
     private String register(String[] params) {
+        if (params == null || params.length != 3) {
+            return "Incorrect number of parameters entered; please refer to the help menu.";
+        }
         try {
             String username = params[0];
             String password = params[1];

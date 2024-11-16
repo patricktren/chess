@@ -2,6 +2,7 @@ package handlers;
 
 import com.google.gson.Gson;
 import dataaccess.Database;
+import exception.Message;
 import exception.ResponseException;
 import protocol.GetGamesRequest;
 import protocol.GetGamesResponse;

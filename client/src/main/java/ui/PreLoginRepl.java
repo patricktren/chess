@@ -10,6 +10,7 @@ public class PreLoginRepl extends Repl{
 
     public void run() {
         System.out.println("Welcome to Chess. Login or register to start.");
+        System.out.println(helpPrompt());
 
         Scanner scanner = new Scanner((System.in));
         String result = "";

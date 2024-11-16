@@ -35,7 +35,7 @@ public class InGameClient implements Client {
             return switch (cmd) {
                 case "redraw" -> redraw();
                 case "leave" -> "leave";
-                default -> inGameRepl.helpPrompt();
+                default -> "Invalid command; refer to the options below:\n" + inGameRepl.helpPrompt();
             };
         } catch (Throwable e) {
             return e.getMessage();
