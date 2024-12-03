@@ -23,9 +23,10 @@ public class PreLoginClient implements Client{
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "login" -> "Welcome " + login(params);
-                case "register" -> "Welcome " + register(params);
+                case "login" -> login(params);
+                case "register" -> register(params);
                 case "quit" -> "quit";
+                case "help" -> preloginRepl.helpPrompt();
                 default -> "Invalid command; refer to the options below:\n" + preloginRepl.helpPrompt();
             };
         } catch (Throwable e) {
@@ -44,7 +45,7 @@ public class PreLoginClient implements Client{
             if (authToken != null) {
                 new PostLoginRepl(server, authToken).run();
             }
-            return "";
+            return "Welcome";
         } catch (Throwable e) {
             return e.getMessage();
         }
@@ -62,7 +63,7 @@ public class PreLoginClient implements Client{
             if (authToken != null) {
                 new PostLoginRepl(server, authToken).run();
             }
-            return "";
+            return "Welcome";
         } catch (Throwable e) {
             return e.getMessage();
         }

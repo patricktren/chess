@@ -7,6 +7,9 @@ import chess.ChessPiece;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static ui.EscapeSequences.*;
 
@@ -21,14 +24,17 @@ public class BoardDrawer {
     PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
     public void drawChessBoard(ChessBoard board, ChessGame.TeamColor teamColor) {
-        drawHeaderFooter();
+        drawHeaderFooter(teamColor);
         Boolean startsLight = true;
         if (teamColor == ChessGame.TeamColor.BLACK) {
             for (int i = 7; i >= 0; i--) {
-                drawMargin(i + 1);
-                drawRow(board.getSquares()[i], startsLight);
+                drawMargin(7 + 1 - i);
+                ChessPiece[] row = board.getSquares()[i];
+                List<ChessPiece> rowList = Arrays.asList(row).reversed();
+                row = rowList.toArray(row);
+                drawRow(row, startsLight);
                 startsLight = !startsLight;
-                drawMargin(i + 1);
+                drawMargin(7 + 1 - i);
                 out.println();
             }
         } else {
@@ -40,16 +46,21 @@ public class BoardDrawer {
                 out.println();
             }
         }
-        drawHeaderFooter();
+        drawHeaderFooter(teamColor);
     }
 
-    private void drawHeaderFooter() {
+    private void drawHeaderFooter(ChessGame.TeamColor playerColor) {
         String letterSpacing = "   ";
         out.print(SET_BG_COLOR_BLUE);
         out.print(SET_TEXT_COLOR_BLACK);
         out.print("      ");
-        out.print("a" + letterSpacing + "b" + letterSpacing + "c" + "  " + "d" + letterSpacing +
-                "e" + "  " + "f" + letterSpacing + "g" + letterSpacing + "h" + letterSpacing + EMPTY);
+        String toPrint = "a" + letterSpacing + "b" + letterSpacing + "c" + "  " + "d" + letterSpacing +
+                "e" + "  " + "f" + letterSpacing + "g" + letterSpacing + "h" + letterSpacing + EMPTY;
+        if (playerColor == ChessGame.TeamColor.BLACK) {
+            toPrint = "h" + letterSpacing + "g" + letterSpacing + "f" + "  " + "e" + letterSpacing +
+                    "d" + "  " + "c" + letterSpacing + "b" + letterSpacing + "a" + letterSpacing + EMPTY;
+        }
+        out.print(toPrint);
         // revert color and print line.
         out.print(RESET_TEXT_COLOR);
         out.print(RESET_BG_COLOR);

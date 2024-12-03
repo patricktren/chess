@@ -4,6 +4,7 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import model.AuthToken;
 import model.Game;
+import org.junit.platform.commons.util.BlacklistedExceptions;
 import protocol.*;
 import server.ServerFacade;
 
@@ -25,6 +26,7 @@ public class InGameClient implements Client {
     public InGameClient(ServerFacade server, InGameRepl inGameRepl) {
         this.inGameRepl = inGameRepl;
         this.server = server;
+        redraw();
     }
 
     public String evalInput(String input, String authToken) {
@@ -35,6 +37,7 @@ public class InGameClient implements Client {
             return switch (cmd) {
                 case "redraw" -> redraw();
                 case "leave" -> "leave";
+                case "help" -> inGameRepl.helpPrompt();
                 default -> "Invalid command; refer to the options below:\n" + inGameRepl.helpPrompt();
             };
         } catch (Throwable e) {
@@ -45,7 +48,10 @@ public class InGameClient implements Client {
     private static String redraw() {
         var board = new ChessBoard();
         board.resetBoard();
-        boardDrawer.drawChessBoard(board, inGameRepl.getPlayerColor());
+//        boardDrawer.drawChessBoard(board, inGameRepl.getPlayerColor());
+        boardDrawer.drawChessBoard(board, ChessGame.TeamColor.WHITE);
+        System.out.println();
+        boardDrawer.drawChessBoard(board, ChessGame.TeamColor.BLACK);
         return "";
     }
 }

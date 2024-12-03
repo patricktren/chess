@@ -9,6 +9,7 @@ import server.ServerFacade;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class PostLoginClient implements Client {
     private final PostLoginRepl postloginRepl;
@@ -33,6 +34,7 @@ public class PostLoginClient implements Client {
                 case "logout" -> logout(authToken);
                 case "watch" -> watch(params, authToken);
                 case "quit" -> "quit";
+                case "help" -> postloginRepl.helpPrompt();
                 default -> "Invalid command; refer to the options below:\n" + postloginRepl.helpPrompt();
             };
         } catch (Throwable e) {
@@ -66,7 +68,7 @@ public class PostLoginClient implements Client {
         try {
             String gameName = params[0];
             String gameID = server.create(new CreateGameRequest(authToken, gameName)).gameID().toString();
-            return "";
+            return "Game successfully created!";
         } catch (Throwable e) {
             return e.getMessage();
         }
@@ -96,11 +98,7 @@ public class PostLoginClient implements Client {
             }
 
             server.join(new JoinGameRequest(authToken, playerColor, gameNum));
-            new InGameRepl(server, authToken, playerColor);
-            var draw = new BoardDrawer();
-            var board = new ChessBoard();
-            board.resetBoard();
-            draw.drawChessBoard(board, playerColor);
+            new InGameRepl(server, authToken, playerColor).run();
             return "";
         } catch (Throwable e) {
             return e.getMessage();
@@ -116,6 +114,30 @@ public class PostLoginClient implements Client {
     }
 
     private String watch(String[] params, String authToken) {
-        return "To be implemented";
+        if (params == null || params.length != 1) {
+            return "Incorrect number of parameters entered; please refer to the help menu.";
+        }
+
+        // get game number
+        Integer gameNum = null;
+        try {
+            gameNum = Integer.parseInt(params[0]);
+        } catch (NumberFormatException e) {
+            return "Invalid game ID; please try again";
+        }
+        try {
+            GetGamesResponse getGamesResponse = server.list(new GetGamesRequest(authToken));
+            for (Game game:getGamesResponse.games()) {
+                if (Objects.equals(server.getGameIDMap().get(gameNum), game.gameID())) {
+//                    new BoardDrawer().drawChessBoard(game.gameState().getBoard(), ChessGame.TeamColor.WHITE);
+                    ChessBoard newBoard = new ChessBoard();
+                    newBoard.resetBoard();
+                    new BoardDrawer().drawChessBoard(newBoard, ChessGame.TeamColor.WHITE);
+                }
+            }
+        } catch (Throwable e) {
+            return "Couldn't connect to database";
+        }
+        return "";
     }
 }

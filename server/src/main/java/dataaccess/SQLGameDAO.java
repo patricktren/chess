@@ -81,7 +81,7 @@ public class SQLGameDAO implements GameDAO{
 
     @Override
     public ArrayList<Game> getGames(String token) throws DataAccessException {
-        String sqlStatement = "SELECT game_id, game_name, white_username, black_username FROM games;";
+        String sqlStatement = "SELECT game_id, game_name, white_username, black_username, game_state FROM games;";
         try (Connection connection = getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
             preparedStatement.executeQuery();
@@ -93,11 +93,15 @@ public class SQLGameDAO implements GameDAO{
                 String gameNameResult = resultSet.getString("game_name");
                 String whiteUsernameResult = resultSet.getString("white_username");
                 String blackUsernameResult = resultSet.getString("black_username");
+                String gameStateResult = resultSet.getString("game_state");
 
                 // set null values to empty strings
                 if (gameNameResult != null && gameNameResult.equals("null")) {gameNameResult = null;}
                 if (whiteUsernameResult != null && whiteUsernameResult.equals("null")) {whiteUsernameResult = null;}
                 if (blackUsernameResult != null && blackUsernameResult.equals("null")) {blackUsernameResult = null;}
+
+                // get game
+//                new Gson().fromJson()
 
                 games.add(new Game(gameIDResult, gameNameResult, whiteUsernameResult, blackUsernameResult, null));
             }

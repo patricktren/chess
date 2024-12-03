@@ -20,11 +20,11 @@ public class LoginService extends Service {
             var user = userDAO.getUser(loginRequest.username());
             // user doesn't exist?
             if (user == null) {
-                throw new ResponseException(401, "Error: User doesn't exist");
+                throw new ResponseException(401, "Error: Invalid username or password");
             }
             // invalid password?
             else if (!BCrypt.checkpw(loginRequest.password(), user.getPassword())) {
-                throw new ResponseException(401, "Error: Invalid password");
+                throw new ResponseException(401, "Error: Invalid username or password");
             }
             // login
             else {
