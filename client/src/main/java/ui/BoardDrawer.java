@@ -1,14 +1,11 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
+import chess.*;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static ui.EscapeSequences.*;
@@ -23,30 +20,43 @@ public class BoardDrawer {
 
     PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
-    public void drawChessBoard(ChessBoard board, ChessGame.TeamColor teamColor) {
-        drawHeaderFooter(teamColor);
-        Boolean startsLight = true;
-        if (teamColor == ChessGame.TeamColor.BLACK) {
-            for (int i = 7; i >= 0; i--) {
-                drawMargin(7 + 1 - i);
-                ChessPiece[] row = board.getSquares()[i];
+    public void drawChessBoard(ChessBoard board, ChessGame.TeamColor playerColor, ChessPosition highlightPiecePosition) {
+        ArrayList<ChessMove> toHighlightMoves = null;
+        ArrayList<ChessPosition> positionsToHighlight = new ArrayList<>();
+        // highlight positions
+        if (highlightPiecePosition != null && board.getPiece(highlightPiecePosition) != null) {
+            // get possible moves and convert to ChessPositions
+            toHighlightMoves = new ArrayList<>(board.getPiece(highlightPiecePosition).pieceMoves(board, highlightPiecePosition));
+            positionsToHighlight = new ArrayList<>();
+            for (ChessMove move:toHighlightMoves) {
+                positionsToHighlight.add(move.getEndPosition());
+            }
+        }
+
+
+        drawHeaderFooter(playerColor);
+        boolean startsLight = true;
+        if (playerColor == ChessGame.TeamColor.BLACK) {
+            for (int r = 7; r >= 0; r--) {
+                drawMargin(7 + 1 - r);
+                ChessPiece[] row = board.getSquares()[r];
                 List<ChessPiece> rowList = Arrays.asList(row).reversed();
                 row = rowList.toArray(row);
-                drawRow(row, startsLight);
+                drawRow(r, row, startsLight, positionsToHighlight, highlightPiecePosition, playerColor);
                 startsLight = !startsLight;
-                drawMargin(7 + 1 - i);
+                drawMargin(7 + 1 - r);
                 out.println();
             }
         } else {
-            for (int i = 0; i <= 7; i++) {
-                drawMargin(7 + 1 - i);
-                drawRow(board.getSquares()[i], startsLight);
+            for (int r = 0; r <= 7; r++) {
+                drawMargin(7 + 1 - r);
+                drawRow(r, board.getSquares()[r], startsLight, positionsToHighlight, highlightPiecePosition, playerColor);
                 startsLight = !startsLight;
-                drawMargin(7 + 1 - i);
+                drawMargin(7 + 1 - r);
                 out.println();
             }
         }
-        drawHeaderFooter(teamColor);
+        drawHeaderFooter(playerColor);
     }
 
     private void drawHeaderFooter(ChessGame.TeamColor playerColor) {
@@ -77,15 +87,45 @@ public class BoardDrawer {
         out.print(RESET_BG_COLOR);
     }
 
-    private void drawRow(ChessPiece[] row, Boolean startsLight) {
+    private void drawRow(Integer rowNum, ChessPiece[] row, Boolean startsLight, ArrayList<ChessPosition> toHighlight, ChessPosition piecePosition, ChessGame.TeamColor playerColor) {
         boolean isLight = startsLight;
-        for (int i=0; i < row.length; i++) {
-            if (isLight) {
+        // highlight potential moves for white player
+        for (int c = 0; c < row.length; c++) {
+            if (playerColor == ChessGame.TeamColor.WHITE &&
+                    toHighlight.contains(new ChessPosition(8 - (rowNum), c + 1))) {
+                if (isLight) {
+                    out.print(SET_BG_COLOR_LIGHT_GREEN_HIGHLIGHT);
+                } else {
+                    out.print(SET_BG_COLOR_DARK_GREEN);
+                }
+            }
+            // highlight potential moves for black player
+            else if (playerColor == ChessGame.TeamColor.BLACK &&
+                    toHighlight.contains(new ChessPosition(8 - rowNum, 8 - c))) {
+                if (isLight) {
+                    out.print(SET_BG_COLOR_LIGHT_GREEN_HIGHLIGHT);
+                } else {
+                    out.print(SET_BG_COLOR_DARK_GREEN);
+                }
+            }
+            // highlight starting position for white
+            else if (playerColor == ChessGame.TeamColor.WHITE &&
+                    piecePosition != null &&
+                    piecePosition.equals(new ChessPosition(8 - rowNum, c + 1))) {
+                out.print(SET_BG_COLOR_BLUE_HIGHLIGHT);
+            }
+            // highlight starting position for black
+            else if (playerColor == ChessGame.TeamColor.BLACK &&
+                    piecePosition != null &&
+                    piecePosition.equals(new ChessPosition(8 - rowNum, 8 - c))) {
+                out.print(SET_BG_COLOR_BLUE_HIGHLIGHT);
+            }
+            else if (isLight) {
                 out.print(SET_BG_COLOR_LIGHT_BEIGE);
             } else {
                 out.print(SET_BG_COLOR_DARK_BEIGE);
             }
-            ChessPiece piece = row[i];
+            ChessPiece piece = row[c];
             String toPrint = "";
             if (piece == null) {
                 toPrint = EMPTY;

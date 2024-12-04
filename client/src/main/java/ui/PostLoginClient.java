@@ -132,7 +132,7 @@ public class PostLoginClient implements Client {
 //                    new BoardDrawer().drawChessBoard(game.gameState().getBoard(), ChessGame.TeamColor.WHITE);
                     ChessBoard newBoard = new ChessBoard();
                     newBoard.resetBoard();
-                    new BoardDrawer().drawChessBoard(newBoard, ChessGame.TeamColor.WHITE);
+                    new BoardDrawer().drawChessBoard(newBoard, ChessGame.TeamColor.WHITE, null);
                 }
             }
         } catch (Throwable e) {
