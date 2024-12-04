@@ -35,7 +35,6 @@ public class InGameRepl extends Repl {
             Highlight legal moves: "highlight" <position> (e.g. f5)
             Make a move: "move" <starting_position> <ending_position> <optional promotion> (e.g. f5 e4 q)
             Redraw chess board: "redraw"
-            Change color scheme: "colors" <color number>
             Resign from game: "resign"
             Leave game: "leave"
             Print this message: "help"
