@@ -11,7 +11,7 @@ public class InGameRepl extends Repl {
     private final String authToken;
     private final ChessGame.TeamColor playerColor;
     public InGameRepl(ServerFacade server, String authToken, ChessGame.TeamColor playerColor) {
-        this.client = new InGameClient(server, this);
+        this.client = new InGameClient(server, this, authToken);
         this.authToken = authToken;
         this.playerColor = playerColor;
     }

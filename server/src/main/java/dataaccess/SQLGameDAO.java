@@ -68,7 +68,7 @@ public class SQLGameDAO implements GameDAO{
                 if (whiteUsernameResult != null && whiteUsernameResult.equals("null")) {whiteUsernameResult = null;}
                 if (blackUsernameResult != null && blackUsernameResult.equals("null")) {blackUsernameResult = null;}
 
-                return new Game(gameIDResult, gameNameResult, whiteUsernameResult, blackUsernameResult, null);
+                return new Game(gameIDResult, gameNameResult, whiteUsernameResult, blackUsernameResult, gameStateResult);
             }
             else {
                 return null;
@@ -93,17 +93,16 @@ public class SQLGameDAO implements GameDAO{
                 String gameNameResult = resultSet.getString("game_name");
                 String whiteUsernameResult = resultSet.getString("white_username");
                 String blackUsernameResult = resultSet.getString("black_username");
-                String gameStateResult = resultSet.getString("game_state");
+
+                String serializedGameStateResult = resultSet.getString("game_state");
+                ChessGame gameStateResult = new Gson().fromJson(serializedGameStateResult, ChessGame.class);
 
                 // set null values to empty strings
                 if (gameNameResult != null && gameNameResult.equals("null")) {gameNameResult = null;}
                 if (whiteUsernameResult != null && whiteUsernameResult.equals("null")) {whiteUsernameResult = null;}
                 if (blackUsernameResult != null && blackUsernameResult.equals("null")) {blackUsernameResult = null;}
 
-                // get game
-//                new Gson().fromJson()
-
-                games.add(new Game(gameIDResult, gameNameResult, whiteUsernameResult, blackUsernameResult, null));
+                games.add(new Game(gameIDResult, gameNameResult, whiteUsernameResult, blackUsernameResult, gameStateResult));
             }
             return games;
         }

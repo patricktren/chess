@@ -1,5 +1,6 @@
 package server;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 
 import java.io.*;
@@ -15,6 +16,7 @@ import protocol.*;
 public class ServerFacade {
     private final String serverUrl;
     private HashMap<Integer, Integer> gameIDMap = new HashMap<>();
+    private Integer currGameId = null;
 
     public ServerFacade(String serverUrl) {
         this.serverUrl = serverUrl;
@@ -22,6 +24,13 @@ public class ServerFacade {
 
     public HashMap<Integer, Integer> getGameIDMap() {
         return gameIDMap;
+    }
+    public void resetCurrGameId() {
+        currGameId = null;
+    }
+
+    public Integer getCurrGameId() {
+        return currGameId;
     }
 
     public RegisterResponse register(RegisterRequest registerRequest) throws ResponseException {
@@ -39,17 +48,22 @@ public class ServerFacade {
         return this.makeRequest("POST", path, createRequest, createRequest.authToken(), CreateGameResponse.class);
     }
 
-    public GetGamesResponse list(GetGamesRequest getGamesRequest) throws ResponseException {
-        var path = "/game";
-        var games = this.makeRequest("GET", path, null, getGamesRequest.authToken(), GetGamesResponse.class);
+    public GetGamesResponse list(GetGamesRequest getGamesRequest) {
+        try {
+            var path = "/game";
+            var games = this.makeRequest("GET", path, null, getGamesRequest.authToken(), GetGamesResponse.class);
 
-        ArrayList<Game> gamesList = (ArrayList<Game>) games.games();
-        gameIDMap.clear();
-        for (int i=0; i < gamesList.size(); i++) {
-            Game game = gamesList.get(i);
-            gameIDMap.put(i+1, game.gameID());
+            ArrayList<Game> gamesList = (ArrayList<Game>) games.games();
+            gameIDMap.clear();
+            for (int i = 0; i < gamesList.size(); i++) {
+                Game game = gamesList.get(i);
+                gameIDMap.put(i + 1, game.gameID());
+            }
+            return games;
         }
-        return games;
+        catch (Exception e) {
+            return null;
+        }
     }
 
     public JoinGameResponse join(JoinGameRequest joinGameRequest) throws ResponseException {
@@ -59,7 +73,9 @@ public class ServerFacade {
         }
         var joinGameRequestFix = new JoinGameRequest(joinGameRequest.authToken(),
                 joinGameRequest.playerColor(), gameIDMap.get(joinGameRequest.gameID()));
-        return this.makeRequest("PUT", path, joinGameRequestFix, joinGameRequestFix.authToken(), JoinGameResponse.class);
+        JoinGameResponse joinGameResponse = this.makeRequest("PUT", path, joinGameRequestFix, joinGameRequestFix.authToken(), JoinGameResponse.class);
+        currGameId = joinGameRequestFix.gameID();
+        return joinGameResponse;
     }
 
     public LogoutResponse logout(LogoutRequest logoutRequest) throws ResponseException {

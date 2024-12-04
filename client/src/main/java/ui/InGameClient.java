@@ -1,19 +1,11 @@
 package ui;
 
-import chess.ChessBoard;
 import chess.ChessGame;
-import model.AuthToken;
 import model.Game;
-import org.junit.platform.commons.util.BlacklistedExceptions;
 import protocol.*;
 import server.ServerFacade;
 
-import java.io.PrintStream;
-import java.lang.reflect.Array;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 
 public class InGameClient implements Client {
@@ -21,11 +13,12 @@ public class InGameClient implements Client {
     private final ServerFacade server;
     private static BoardDrawer boardDrawer = new BoardDrawer();
 
-    private HashMap<Integer, Integer> gameIDMap = new HashMap<>();
+    private final String authToken;
 
-    public InGameClient(ServerFacade server, InGameRepl inGameRepl) {
+    public InGameClient(ServerFacade server, InGameRepl inGameRepl, String authToken) {
         this.inGameRepl = inGameRepl;
         this.server = server;
+        this.authToken = authToken;
         redraw();
     }
 
@@ -46,13 +39,12 @@ public class InGameClient implements Client {
         }
     }
 
-    private static String redraw() {
-        var board = new ChessBoard();
-        board.resetBoard();
-//        boardDrawer.drawChessBoard(board, inGameRepl.getPlayerColor());
-        boardDrawer.drawChessBoard(board, ChessGame.TeamColor.WHITE);
-        System.out.println();
-        boardDrawer.drawChessBoard(board, ChessGame.TeamColor.BLACK);
+    private String redraw() {
+        ChessGame currGame = getCurrGame();
+        boardDrawer.drawChessBoard(currGame.getBoard(), inGameRepl.getPlayerColor());
+//        boardDrawer.drawChessBoard(board, ChessGame.TeamColor.WHITE);
+//        System.out.println();
+//        boardDrawer.drawChessBoard(board, ChessGame.TeamColor.BLACK);
         return "";
     }
 
@@ -76,5 +68,25 @@ public class InGameClient implements Client {
 
 
         return "";
+    }
+
+    private ChessGame getCurrGame() {
+        try {
+            GetGamesResponse gameList = server.list(new GetGamesRequest(this.authToken));
+            for (Game game:gameList.games()) {
+                if (game.gameID().equals(server.getCurrGameId())) {
+                    return game.gameState();
+                }
+            }
+            return null;
+        }
+        catch (Exception er) {
+            return null;
+        }
+    }
+
+    public String leave() {
+        server.resetCurrGameId();
+        return "leave";
     }
 }
