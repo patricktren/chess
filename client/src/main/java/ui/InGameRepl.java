@@ -11,16 +11,16 @@ public class InGameRepl extends Repl {
     private final String authToken;
     private final ChessGame.TeamColor playerColor;
     public InGameRepl(ServerFacade server, String authToken, ChessGame.TeamColor playerColor) {
-        this.client = new InGameClient(server, this, authToken);
         this.authToken = authToken;
         this.playerColor = playerColor;
+        this.client = new InGameClient(server, this, authToken);
     }
 
     public ChessGame.TeamColor getPlayerColor() {
         return playerColor;
     }
 
-    public void run() {
+    public void run(ChessGame.TeamColor color) {
         System.out.println("Welcome to the game.");
 
         Scanner scanner = new Scanner((System.in));

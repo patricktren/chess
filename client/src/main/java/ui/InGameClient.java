@@ -42,9 +42,6 @@ public class InGameClient implements Client {
     private String redraw() {
         ChessGame currGame = getCurrGame();
         boardDrawer.drawChessBoard(currGame.getBoard(), inGameRepl.getPlayerColor());
-//        boardDrawer.drawChessBoard(board, ChessGame.TeamColor.WHITE);
-//        System.out.println();
-//        boardDrawer.drawChessBoard(board, ChessGame.TeamColor.BLACK);
         return "";
     }
 
