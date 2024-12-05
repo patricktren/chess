@@ -17,9 +17,11 @@ public class ServerFacade {
     private final String serverUrl;
     private HashMap<Integer, Integer> gameIDMap = new HashMap<>();
     private Integer currGameId = null;
+    private final String authToken;
 
-    public ServerFacade(String serverUrl) {
+    public ServerFacade(String serverUrl, String authToken) {
         this.serverUrl = serverUrl;
+        this.authToken = authToken;
     }
 
     public HashMap<Integer, Integer> getGameIDMap() {
@@ -31,6 +33,14 @@ public class ServerFacade {
 
     public Integer getCurrGameId() {
         return currGameId;
+    }
+
+    public String getServerUrl() {
+        return serverUrl;
+    }
+
+    public String getAuthToken() {
+        return authToken;
     }
 
     public RegisterResponse register(RegisterRequest registerRequest) throws ResponseException {

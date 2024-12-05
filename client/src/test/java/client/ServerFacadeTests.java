@@ -24,7 +24,7 @@ public class ServerFacadeTests {
         server = new Server();
         var port = server.run(0);
         serverUrl = "http://localhost:" + port;
-        serverFacade = new ServerFacade(serverUrl);
+        serverFacade = new ServerFacade(serverUrl, null);
 
 
         System.out.println("Started Main HTTP server on " + port);

@@ -9,15 +9,15 @@ import java.util.Arrays;
 public class PreLoginClient implements Client{
     private final String serverUrl;
     private final PreLoginRepl preloginRepl;
-    private final ServerFacade server;
+    private ServerFacade server;
 
     public PreLoginClient(String serverUrl, PreLoginRepl preloginRepl) {
         this.serverUrl = serverUrl;
         this.preloginRepl = preloginRepl;
-        server = new ServerFacade(serverUrl);
     }
 
     public String evalInput(String input, String authToken) {
+        server = new ServerFacade(serverUrl, authToken);
         try {
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
