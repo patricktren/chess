@@ -27,10 +27,10 @@ public class Repl implements NotificationHandler {
     @Override
     public void notify(ServerMessage notification) {
         if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.NOTIFICATION)) {
-            System.out.println(">>> " + notification);
+            System.out.println(">>> " + notification.getMessage() + "\n");
         }
         else if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.LOAD_GAME)) {
-
+            new BoardDrawer().drawChessBoard(notification.getGame().gameState().getBoard(), notification.getPlayerColor(), null);
         }
     }
 }

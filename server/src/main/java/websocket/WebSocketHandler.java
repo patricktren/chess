@@ -27,9 +27,9 @@ public class WebSocketHandler {
         }
     }
     private void connect(UserGameCommand command, Session session) throws DataAccessException, IOException {
-        connections.add(command.getGameID(), command.getAuthToken(), session);
+        connections.add(command, session);
     }
     private void disconnect(UserGameCommand command) throws IOException, DataAccessException {
-        connections.remove(command.getGameID(), command.getAuthToken());
+        connections.remove(command);
     }
 }

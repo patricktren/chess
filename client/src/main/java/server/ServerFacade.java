@@ -19,6 +19,7 @@ public class ServerFacade {
     private Integer currGameId = null;
     private String authToken;
     public String username;
+    public ChessGame.TeamColor playerColor;
 
     public ServerFacade(String serverUrl, String authToken) {
         this.serverUrl = serverUrl;
@@ -31,6 +32,10 @@ public class ServerFacade {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public void setPlayerColor(ChessGame.TeamColor playerColor) {
+        this.playerColor = playerColor;
     }
 
     public HashMap<Integer, Integer> getGameIDMap() {

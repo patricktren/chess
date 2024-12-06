@@ -98,6 +98,7 @@ public class PostLoginClient implements Client {
             }
 
             server.join(new JoinGameRequest(authToken, playerColor, gameNum));
+            server.setPlayerColor(playerColor);
             new InGameRepl(server, authToken, playerColor).run(playerColor);
             return "";
         } catch (Throwable e) {

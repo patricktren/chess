@@ -5,6 +5,7 @@ import dataaccess.SQLAuthTokenDAO;
 import dataaccess.SQLUserDAO;
 import model.AuthToken;
 import org.eclipse.jetty.websocket.api.Session;
+import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class ConnectionManager {
         ArrayList<Connection> removeList = new ArrayList<>();
         for (Connection connection : connections.get(gameId)) {
             if (connection.session.isOpen()) {
-                if (connection.username.equals(excludeVisitorName)) {
+                if (!connection.username.equals(excludeVisitorName)) {
                     connection.send(notification.toString());
                 }
             } else {
@@ -31,30 +32,30 @@ public class ConnectionManager {
         }
     }
 
-    public void add(Integer gameId, String authToken, Session session) throws DataAccessException, IOException {
-        String username = new SQLAuthTokenDAO().getAuthToken(authToken).getUsername();
-        if (connections.containsKey(gameId)) {
-            connections.get(gameId).add(new Connection(username, authToken, session));
+    public void add(UserGameCommand command, Session session) throws DataAccessException, IOException {
+        String username = new SQLAuthTokenDAO().getAuthToken(command.getAuthToken()).getUsername();
+        if (connections.containsKey(command.getGameID())) {
+            connections.get(command.getGameID()).add(new Connection(username, command.getAuthToken(), session, command.getPlayerColor()));
         }
         else {
             ArrayList<Connection> newConnectionList = new ArrayList<>();
-            newConnectionList.add(new Connection(username, authToken, session));
-            connections.put(gameId, newConnectionList);
+            newConnectionList.add(new Connection(username, command.getAuthToken(), session, command.getPlayerColor()));
+            connections.put(command.getGameID(), newConnectionList);
         }
         String message = String.format("%s has joined the game", username);
-        broadcast(gameId, username, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null));
+        broadcast(command.getGameID(), username, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null, command.getPlayerColor()));
     }
-    public void remove(Integer gameId, String authToken) throws DataAccessException, IOException {
+    public void remove(UserGameCommand command) throws DataAccessException, IOException {
         var newConnectionList = new ArrayList<Connection>();
-        for (Connection connection : connections.get(gameId)) {
-            if (!connection.authToken.equals(authToken)) {
-                newConnectionList.add(new Connection(connection.username, connection.authToken, connection.session));
+        for (Connection connection : connections.get(command.getGameID())) {
+            if (!connection.authToken.equals(command.getAuthToken())) {
+                newConnectionList.add(new Connection(connection.username, connection.authToken, connection.session, command.getPlayerColor()));
             }
         }
-        connections.put(gameId, newConnectionList);
+        connections.put(command.getGameID(), newConnectionList);
 
-        String username = new SQLAuthTokenDAO().getAuthToken(authToken).getUsername();
+        String username = new SQLAuthTokenDAO().getAuthToken(command.getAuthToken()).getUsername();
         String message = String.format("%s has left the game", username);
-        broadcast(gameId, username, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null));
+        broadcast(command.getGameID(), username, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null, command.getPlayerColor()));
     }
 }
