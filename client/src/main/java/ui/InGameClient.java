@@ -26,7 +26,7 @@ public class InGameClient implements Client {
         this.authToken = authToken;
         this.ws = new WebSocketFacade(server, inGameRepl, authToken, server.username);
         ws.enterGame(server.username, server.playerColor);
-        redraw(null);
+//        redraw(null);
     }
 
     public String evalInput(String input, String authToken) {

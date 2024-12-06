@@ -23,20 +23,22 @@ public class ConnectionManager {
         ArrayList<Connection> removeList = new ArrayList<>();
         for (Connection connection : connections.get(gameId)) {
             if (connection.session.isOpen()) {
+                // send join notification
                 if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.NOTIFICATION)
                         && !connection.username.equals(excludeVisitorName)) {
                     connection.send(notification.toString());
                 }
+                // print game on join
                 else if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.LOAD_GAME)
                         && notification.getMessage() == null
                         && connection.username.equals(excludeVisitorName)) {
                     connection.send(notification.toString());
                 }
+                // print game on move
                 else if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.LOAD_GAME)
                         && notification.getMessage() != null) {
                     connection.send(notification.toString());
                 }
-//                connection.send(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, "ree", null, null).toString());
             } else {
                 removeList.add(connection);
             }
@@ -100,6 +102,11 @@ public class ConnectionManager {
         } else {
             playerColor = ChessGame.TeamColor.WHITE;
         }
-        broadcast(command.getGameID(), "", new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, null, game, playerColor));
+        if (command.getCommandType().equals(UserGameCommand.CommandType.CONNECT)) {
+            broadcast(command.getGameID(), username, new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, null, game, playerColor));
+        }
+        else {
+            broadcast(command.getGameID(), "", new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, username + " made a move", game, playerColor));
+        }
     }
 }
