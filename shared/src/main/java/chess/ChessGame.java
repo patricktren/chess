@@ -94,6 +94,22 @@ public class ChessGame {
 
     }
 
+    public boolean isPromotion(ChessMove move) {
+        // return false if the piece isn't a pawn
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        if (piece != null || !piece.getPieceType().equals(ChessPiece.PieceType.PAWN)) {
+             return false;
+        }
+        // now we know it's a pawn; check to see if
+        if (piece.getTeamColor().equals(TeamColor.BLACK) && move.getEndPosition().getRow() == 1) {
+            return true;
+        }
+        if (piece.getTeamColor().equals(TeamColor.WHITE) && move.getEndPosition().getRow() == 8) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Makes a move in a chess game
      *

@@ -45,6 +45,8 @@ public class UserGameCommand {
         return gameID;
     }
 
+    public String move = null;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -57,6 +59,10 @@ public class UserGameCommand {
         return getCommandType() == that.getCommandType() &&
                 Objects.equals(getAuthToken(), that.getAuthToken()) &&
                 Objects.equals(getGameID(), that.getGameID());
+    }
+
+    public void setMove(String move) {
+        this.move = move;
     }
 
     @Override

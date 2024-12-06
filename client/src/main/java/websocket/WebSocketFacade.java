@@ -67,6 +67,31 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
+    public void makeMove(String paramStr, String authToken) throws ResponseException {
+        try {
+            UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, server.getCurrGameId());
+            command.setMove(paramStr);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        }
+        catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    public Integer parseLetterToInt(char character) {
+        return switch (String.valueOf(character)) {
+            case "a" -> 1;
+            case "b" -> 2;
+            case "c" -> 3;
+            case "d" -> 4;
+            case "e" -> 5;
+            case "f" -> 6;
+            case "g" -> 7;
+            case "h" -> 8;
+            default -> 0;
+        };
+    }
+
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }

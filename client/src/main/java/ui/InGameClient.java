@@ -37,10 +37,22 @@ public class InGameClient implements Client {
                 case "highlight" -> highlight(params, authToken);
                 case "redraw" -> redraw(null);
                 case "leave" -> "leave";
+                case "move" -> move(params, authToken);
                 case "help" -> inGameRepl.helpPrompt();
                 default -> "Invalid command; refer to the options below:\n" + inGameRepl.helpPrompt();
             };
         } catch (Throwable e) {
+            return e.getMessage();
+        }
+    }
+
+    private String move(String[] params, String authToken) {
+        try {
+            String paramStr = String.join(" ", params);
+            ws.makeMove(paramStr, authToken);
+            return "";
+        }
+        catch (Exception e) {
             return e.getMessage();
         }
     }
@@ -51,24 +63,14 @@ public class InGameClient implements Client {
         return "";
     }
 
+
     private String highlight(String[] params, String authToken) {
         if (params == null || params.length != 1 || params[0].length() != 2) {
             return "Incorrect number of parameters entered; please refer to the help menu.";
         }
         try {
-            String positionStr = params[0].toLowerCase();
             Integer row = Integer.parseInt(String.valueOf(params[0].charAt(1)));
-            Integer col = switch (String.valueOf(params[0].charAt(0))) {
-                case "a" -> 1;
-                case "b" -> 2;
-                case "c" -> 3;
-                case "d" -> 4;
-                case "e" -> 5;
-                case "f" -> 6;
-                case "g" -> 7;
-                case "h" -> 8;
-                default -> 0;
-            };
+            Integer col = ws.parseLetterToInt(params[0].charAt(0));
             redraw(new ChessPosition(row, col));
 
             return "";

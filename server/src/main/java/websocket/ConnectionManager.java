@@ -31,13 +31,18 @@ public class ConnectionManager {
                 // print game on join
                 else if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.LOAD_GAME)
                         && notification.getMessage() == null
-                        && connection.username.equals(excludeVisitorName)) {
+                        && connection.username.equals(excludeVisitorName)) { // here we only send it to excludeVisitorName
                     connection.send(notification.toString());
                 }
                 // print game on move
                 else if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.LOAD_GAME)
                         && notification.getMessage() != null) {
-                    connection.send(notification.toString());
+                    ServerMessage personalMessage = null;
+                    if (connection.playerColor != null) {
+                        connection.send(new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, null, notification.getGame(), connection.playerColor).toString());
+                    } else {
+                        connection.send(new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, null, notification.getGame(), ChessGame.TeamColor.WHITE).toString());
+                    }
                 }
             } else {
                 removeList.add(connection);

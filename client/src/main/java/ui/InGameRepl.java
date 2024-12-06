@@ -38,7 +38,7 @@ public class InGameRepl extends Repl {
         return """
             Options:
             Highlight legal moves: "highlight" <position> (e.g. f5)
-            Make a move: "move" <starting_position> <ending_position> <optional promotion> (e.g. f5 e4 q)
+            Make a move: "move" <starting_position> <ending_position> <optional promotion> (e.g. f7 f8 queen)
             Redraw chess board: "redraw"
             Resign from game: "resign"
             Leave game: "leave"

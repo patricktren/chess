@@ -15,6 +15,7 @@ import java.util.Objects;
 public class ServerMessage {
     ServerMessageType serverMessageType;
     String message;
+    String errorMessage;
     Game game;
     ChessGame.TeamColor playerColor;
 
@@ -29,6 +30,10 @@ public class ServerMessage {
         this.message = message;
         this.game = game;
         this.playerColor = playerColor;
+        if (type.equals(ServerMessageType.ERROR)) {
+            this.errorMessage = message;
+            this.message = null;
+        }
     }
 
     public String getMessage() {
