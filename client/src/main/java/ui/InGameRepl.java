@@ -14,13 +14,11 @@ public class InGameRepl extends Repl {
     private final String authToken;
     private final ChessGame.TeamColor playerColor;
     private WebSocketFacade ws;
-    private NotificationHandler notificationHandler;
 
     public InGameRepl(ServerFacade server, String authToken, ChessGame.TeamColor playerColor) throws ResponseException {
         this.authToken = authToken;
         this.playerColor = playerColor;
         this.client = new InGameClient(server, this, authToken);
-        this.ws = new WebSocketFacade(server, notificationHandler);
     }
 
     public ChessGame.TeamColor getPlayerColor() {

@@ -17,11 +17,20 @@ public class ServerFacade {
     private final String serverUrl;
     private HashMap<Integer, Integer> gameIDMap = new HashMap<>();
     private Integer currGameId = null;
-    private final String authToken;
+    private String authToken;
+    public String username;
 
     public ServerFacade(String serverUrl, String authToken) {
         this.serverUrl = serverUrl;
         this.authToken = authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public HashMap<Integer, Integer> getGameIDMap() {

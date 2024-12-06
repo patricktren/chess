@@ -11,12 +11,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class WebSocketFacade {
+public class WebSocketFacade extends Endpoint {
     ServerFacade server;
     NotificationHandler notificationHandler;
     String url;
     Session session;
-    public WebSocketFacade(ServerFacade server, NotificationHandler notificationHandler) throws ResponseException {
+    String authToken;
+    String username;
+    public WebSocketFacade(ServerFacade server, NotificationHandler notificationHandler, String authToken, String username) throws ResponseException {
         try {
             this.server = server;
             this.notificationHandler = notificationHandler;
@@ -35,14 +37,23 @@ public class WebSocketFacade {
                     notificationHandler.notify(notification);
                 }
             });
-
-            // make connection
-            var command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, server.getAuthToken(), server.getCurrGameId());
-            this.session.getBasicRemote().sendText(new Gson().toJson(command));
         }
 
         catch (DeploymentException | IOException | URISyntaxException ex) {
             throw new ResponseException(500, ex.getMessage());
         }
+    }
+    public void enterGame(String username) throws ResponseException {
+        try {
+            UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, server.getAuthToken(), server.getCurrGameId());
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        }
+        catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    @Override
+    public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 }

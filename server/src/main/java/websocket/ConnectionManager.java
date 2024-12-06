@@ -17,25 +17,23 @@ public class ConnectionManager {
     public void broadcast(Integer gameId, String excludeVisitorName, ServerMessage notification) throws IOException {
         ArrayList<Connection> removeList = new ArrayList<>();
         for (Connection connection : connections.get(gameId)) {
-
             if (connection.session.isOpen()) {
-                if (!connection.username.equals(excludeVisitorName)) {
+                if (connection.username.equals(excludeVisitorName)) {
                     connection.send(notification.toString());
                 }
             } else {
                 removeList.add(connection);
             }
         }
-
         // Clean up any connections that were left open.
         for (Connection connection : removeList) {
             connections.remove(gameId, connection.authToken);
         }
     }
 
-    public void add(Integer gameId, String authToken, Session session) throws DataAccessException {
+    public void add(Integer gameId, String authToken, Session session) throws DataAccessException, IOException {
         String username = new SQLAuthTokenDAO().getAuthToken(authToken).getUsername();
-        if (!connections.containsKey(gameId)) {
+        if (connections.containsKey(gameId)) {
             connections.get(gameId).add(new Connection(username, authToken, session));
         }
         else {
@@ -43,8 +41,10 @@ public class ConnectionManager {
             newConnectionList.add(new Connection(username, authToken, session));
             connections.put(gameId, newConnectionList);
         }
+        String message = String.format("%s has joined the game", username);
+        broadcast(gameId, username, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null));
     }
-    public void remove(Integer gameId, String authToken) {
+    public void remove(Integer gameId, String authToken) throws DataAccessException, IOException {
         var newConnectionList = new ArrayList<Connection>();
         for (Connection connection : connections.get(gameId)) {
             if (!connection.authToken.equals(authToken)) {
@@ -52,5 +52,9 @@ public class ConnectionManager {
             }
         }
         connections.put(gameId, newConnectionList);
+
+        String username = new SQLAuthTokenDAO().getAuthToken(authToken).getUsername();
+        String message = String.format("%s has left the game", username);
+        broadcast(gameId, username, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null));
     }
 }

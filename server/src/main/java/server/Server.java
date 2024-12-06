@@ -6,6 +6,7 @@ import handlers.*;
 
 import exception.ResponseException;
 import spark.*;
+import websocket.WebSocketHandler;
 
 public class Server {
 
@@ -23,6 +24,9 @@ public class Server {
         catch (Throwable er) {
             System.out.println("Error, unable to initialize database: " + er.getMessage());
         }
+
+        WebSocketHandler webSocketHandler = new WebSocketHandler();
+        Spark.webSocket("/ws", webSocketHandler);
 
         // initialize handlers
         RegisterHandler registerHandler = new RegisterHandler(database);

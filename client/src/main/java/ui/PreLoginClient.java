@@ -43,8 +43,11 @@ public class PreLoginClient implements Client{
             String password = params[1];
             String authToken = server.login(new LoginRequest(username, password)).authToken();
             if (authToken != null) {
+                server.setAuthToken(authToken);
+                server.setUsername(username);
                 new PostLoginRepl(server, authToken).run();
             }
+
             return "Welcome";
         } catch (Throwable e) {
             return e.getMessage();

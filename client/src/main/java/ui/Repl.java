@@ -1,10 +1,12 @@
 package ui;
 
 import model.AuthToken;
+import websocket.NotificationHandler;
+import websocket.messages.ServerMessage;
 
 import java.util.Scanner;
 
-public class Repl {
+public class Repl implements NotificationHandler {
     public void repl(Client client, String exitInput, Scanner scanner, String authToken) {
         String result = "";
         while (!result.equals(exitInput)) {
@@ -20,5 +22,15 @@ public class Repl {
     }
     public String helpPrompt() {
         return "";
+    }
+
+    @Override
+    public void notify(ServerMessage notification) {
+        if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.NOTIFICATION)) {
+            System.out.println(">>> " + notification);
+        }
+        else if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.LOAD_GAME)) {
+
+        }
     }
 }

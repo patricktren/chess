@@ -2,9 +2,11 @@ package ui;
 
 import chess.ChessGame;
 import chess.ChessPosition;
+import exception.ResponseException;
 import model.Game;
 import protocol.*;
 import server.ServerFacade;
+import websocket.WebSocketFacade;
 
 import java.io.BufferedReader;
 import java.util.Arrays;
@@ -14,13 +16,16 @@ public class InGameClient implements Client {
     private static InGameRepl inGameRepl;
     private final ServerFacade server;
     private static BoardDrawer boardDrawer = new BoardDrawer();
+    private WebSocketFacade ws;
 
     private final String authToken;
 
-    public InGameClient(ServerFacade server, InGameRepl inGameRepl, String authToken) {
+    public InGameClient(ServerFacade server, InGameRepl inGameRepl, String authToken) throws ResponseException {
         this.inGameRepl = inGameRepl;
         this.server = server;
         this.authToken = authToken;
+        this.ws = new WebSocketFacade(server, inGameRepl, authToken, server.username);
+        ws.enterGame(server.username);
         redraw(null);
     }
 
