@@ -64,6 +64,7 @@ public class PreLoginClient implements Client{
             String email = params[2];
             String authToken = server.register(new RegisterRequest(username, password, email)).authToken();
             if (authToken != null) {
+                server.setAuthToken(authToken);
                 new PostLoginRepl(server, authToken).run();
             }
             return "Welcome";
