@@ -5,11 +5,9 @@ import chess.ChessGame;
 import model.Game;
 import protocol.*;
 import server.ServerFacade;
+import websocket.WebSocketFacade;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 public class PostLoginClient implements Client {
     private final PostLoginRepl postloginRepl;
@@ -130,10 +128,22 @@ public class PostLoginClient implements Client {
             GetGamesResponse getGamesResponse = server.list(new GetGamesRequest(authToken));
             for (Game game:getGamesResponse.games()) {
                 if (Objects.equals(server.getGameIDMap().get(gameNum), game.gameID())) {
-//                    new BoardDrawer().drawChessBoard(game.gameState().getBoard(), ChessGame.TeamColor.WHITE);
-                    ChessBoard newBoard = new ChessBoard();
-                    newBoard.resetBoard();
-                    new BoardDrawer().drawChessBoard(newBoard, ChessGame.TeamColor.WHITE, null);
+                    WebSocketFacade ws = new WebSocketFacade(server, postloginRepl, authToken, server.username);
+                    server.setCurrGameId(game.gameID());
+                    server.setAuthToken(authToken);
+                    ws.enterGame(server.username, null);
+                    Scanner scanner = new Scanner((System.in));
+                    String line = "";
+                    while (!line.equals("leave")) {
+                        line = scanner.nextLine();
+                        if (!Objects.equals(line, "leave")) {
+                            System.out.println("Invalid command; you may type 'leave' to leave, or keep watching.");
+                        }
+                        else {
+                            ws.leaveGame(server.username);
+                        }
+                    }
+
                 }
             }
         } catch (Throwable e) {

@@ -38,6 +38,10 @@ public class ServerFacade {
         this.playerColor = playerColor;
     }
 
+    public void setCurrGameId(Integer gameId) {
+        this.currGameId = gameId;
+    }
+
     public HashMap<Integer, Integer> getGameIDMap() {
         return gameIDMap;
     }

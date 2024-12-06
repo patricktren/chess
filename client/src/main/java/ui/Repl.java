@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import model.AuthToken;
 import websocket.NotificationHandler;
 import websocket.messages.ServerMessage;
@@ -30,7 +31,11 @@ public class Repl implements NotificationHandler {
             System.out.println(">>> " + notification.getMessage() + "\n");
         }
         else if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.LOAD_GAME)) {
-            new BoardDrawer().drawChessBoard(notification.getGame().gameState().getBoard(), notification.getPlayerColor(), null);
+            if (notification.getPlayerColor() != null) {
+                new BoardDrawer().drawChessBoard(notification.getGame().gameState().getBoard(), notification.getPlayerColor(), null);
+            } else {
+                new BoardDrawer().drawChessBoard(notification.getGame().gameState().getBoard(), ChessGame.TeamColor.WHITE, null);
+            }
         }
     }
 }

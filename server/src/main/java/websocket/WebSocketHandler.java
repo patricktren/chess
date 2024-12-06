@@ -20,6 +20,8 @@ public class WebSocketHandler {
             UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
             switch (command.getCommandType()) {
                 case CONNECT -> connect(command, session);
+                case MAKE_MOVE -> printGame(command);
+                case LEAVE -> disconnect(command);
             }
         }
         catch (Throwable er) {
@@ -28,8 +30,13 @@ public class WebSocketHandler {
     }
     private void connect(UserGameCommand command, Session session) throws DataAccessException, IOException {
         connections.add(command, session);
+        connections.printGame(new UserGameCommand(UserGameCommand.CommandType.CONNECT, command.getAuthToken(), command.getGameID()));
     }
     private void disconnect(UserGameCommand command) throws IOException, DataAccessException {
         connections.remove(command);
+    }
+
+    private void printGame(UserGameCommand command) throws IOException, DataAccessException {
+        connections.printGame(command);
     }
 }
