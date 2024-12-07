@@ -26,7 +26,9 @@ public class SQLGameDAO implements GameDAO{
             preparedStatement.setString(1, newGame.gameName());
             preparedStatement.setString(2, newGame.whiteUsername());
             preparedStatement.setString(3, newGame.blackUsername());
-            preparedStatement.setString(4, new Gson().toJson(new ChessGame(), ChessGame.class));
+            ChessGame chessGame = new ChessGame();
+            chessGame.resetBoard(chessGame.getBoard());
+            preparedStatement.setString(4, new Gson().toJson(chessGame, ChessGame.class));
             // execute
             preparedStatement.executeUpdate();
 

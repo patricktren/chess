@@ -227,6 +227,10 @@ public class ChessGame {
         this.board = board;
     }
 
+    public void resetBoard(ChessBoard board) {
+        board.resetBoard();
+    }
+
     /**
      * Gets the current chessboard
      *
