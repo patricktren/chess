@@ -119,9 +119,12 @@ public class ChessGame {
         var startingPositionPiece = board.getPiece(move.startPosition);
 
         // check for invalid move
-        if (startingPositionPiece == null // starting position is empty
-            || startingPositionPiece.getTeamColor() != currentTeamTurn) { // is it the right player's turn?
-            throw new InvalidMoveException();
+        if (startingPositionPiece == null) { // starting position is empty
+            throw new InvalidMoveException("Incorrect syntax for moving; check the help menu.");
+        }
+        // is it the right player's turn?
+        if (startingPositionPiece.getTeamColor() != currentTeamTurn) {
+            throw new InvalidMoveException("It's not your turn.");
         }
         var validMoves = validMoves(move.startPosition);
         // move is valid?
@@ -134,7 +137,7 @@ public class ChessGame {
             }
         }
         else {
-            throw new InvalidMoveException();
+            throw new InvalidMoveException("The move is invalid.");
         }
         if (startingPositionPiece.getTeamColor() == TeamColor.WHITE) {
             currentTeamTurn = TeamColor.BLACK;

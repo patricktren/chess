@@ -1,10 +1,7 @@
 package service;
 
 import chess.ChessGame;
-import dataaccess.AuthTokenDAO;
-import dataaccess.DataAccessException;
-import dataaccess.Database;
-import dataaccess.GameDAO;
+import dataaccess.*;
 import exception.ResponseException;
 import model.Game;
 import protocol.JoinGameRequest;
@@ -38,16 +35,22 @@ public class JoinGameService extends Service{
             if (joinGameRequest.playerColor() != ChessGame.TeamColor.WHITE && joinGameRequest.playerColor() != ChessGame.TeamColor.BLACK) {
                 throw new ResponseException(400, "Error: invalid player color");
             }
-            // verify game has the spot open the player is trying to take
-            if ((Objects.equals(joinGameRequest.playerColor(), ChessGame.TeamColor.WHITE) && game.whiteUsername() != null
-                    && !(game.whiteUsername().equals("null")))
-                    || (Objects.equals(joinGameRequest.playerColor(), ChessGame.TeamColor.BLACK) && game.blackUsername() != null
-                    && !(game.blackUsername().equals("null")))) {
+            // verify game has the spot open the player is trying to take or that they are that player
+            String username = new SQLAuthTokenDAO().getAuthToken(joinGameRequest.authToken()).getUsername();
+            if (
+                (Objects.equals(joinGameRequest.playerColor(), ChessGame.TeamColor.WHITE)
+                    && game.whiteUsername() != null
+                    && !(game.whiteUsername().equals("null"))
+                )
+                || (Objects.equals(joinGameRequest.playerColor(), ChessGame.TeamColor.BLACK)
+                    && game.blackUsername() != null
+                    && !(game.blackUsername().equals("null"))
+                )
+            ) {
                 throw new ResponseException(403, "Error: already taken");
             }
 
             // join game
-            String username = authTokenDAO.getAuthToken(joinGameRequest.authToken()).getUsername();
             if (joinGameRequest.playerColor() == ChessGame.TeamColor.WHITE) {
                 Game updatedGame = new Game(game.gameID(), game.gameName(), username, game.blackUsername(), game.gameState());
                 gameDAO.updateGame(updatedGame);

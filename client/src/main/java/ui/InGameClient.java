@@ -36,7 +36,7 @@ public class InGameClient implements Client {
             return switch (cmd) {
                 case "highlight" -> highlight(params, authToken);
                 case "redraw" -> redraw(null);
-                case "leave" -> "leave";
+                case "leave" -> leave();
                 case "move" -> move(params, authToken);
                 case "help" -> inGameRepl.helpPrompt();
                 default -> "Invalid command; refer to the options below:\n" + inGameRepl.helpPrompt();
@@ -95,8 +95,8 @@ public class InGameClient implements Client {
         }
     }
 
-    public String leave() {
-        server.resetCurrGameId();
+    public String leave() throws ResponseException {
+        ws.leaveGame(server.username);
         return "leave";
     }
 }

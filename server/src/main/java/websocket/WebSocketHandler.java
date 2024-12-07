@@ -72,6 +72,16 @@ public class WebSocketHandler {
     }
     private void disconnect(UserGameCommand command) throws IOException, DataAccessException {
         connections.remove(command);
+        var username = new SQLAuthTokenDAO().getAuthToken(command.getAuthToken()).getUsername();
+        var game = new SQLGameDAO().getGame(command.getGameID());
+        if (game.whiteUsername() != null && game.whiteUsername().equals(username)) {
+            new SQLGameDAO().updateGame(new Game(game.gameID(), game.gameName(), null, game.blackUsername(), game.gameState()));
+        }
+        if (game.blackUsername() != null && game.blackUsername().equals(username)) {
+            new SQLGameDAO().updateGame(new Game(game.gameID(), game.gameName(), game.whiteUsername(), null, game.gameState()));
+        }
+        var message = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, username + " has left the game.", null, null);
+        connections.broadcast(command.getGameID(), username, message);
     }
 
     private void makeMove(UserGameCommand command, Session session) throws IOException, DataAccessException, InvalidMoveException {
@@ -124,7 +134,8 @@ public class WebSocketHandler {
         String notification = String.format("%s moved their %s from %s to %s",
                 username, game.gameState().getBoard().getPiece(move.getEndPosition()).getPieceType().toString(), move.getStartPosition(), move.getEndPosition());
         // print updated game state
-        connections.broadcast(game.gameID(), null, new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, null, game, null));
+//        connections.broadcast(game.gameID(), null, new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, null, game, null));
+        connections.printGame(command);
 
         // notify users
         ServerMessage message = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, notification, null, null);
