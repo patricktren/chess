@@ -15,7 +15,6 @@ public class ChessGame {
 
     public ChessGame() {
         board = new ChessBoard();
-        board.resetBoard();
         currentTeamTurn = TeamColor.WHITE;
     }
 
@@ -226,7 +225,6 @@ public class ChessGame {
      */
     public void setBoard(ChessBoard board) {
         this.board = board;
-        this.board.resetBoard();
     }
 
     /**
