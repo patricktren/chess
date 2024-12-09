@@ -11,6 +11,7 @@ import dataaccess.SQLGameDAO;
 import model.Game;
 import model.User;
 import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.UserGameCommand;
@@ -22,6 +23,12 @@ import java.util.concurrent.ExecutionException;
 @WebSocket
 public class WebSocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
+
+    @OnWebSocketError
+    public void onError(Throwable err) throws Throwable {
+        System.out.println("reee");
+        throw err;
+    }
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) {
@@ -54,6 +61,7 @@ public class WebSocketHandler {
                     case CONNECT -> connect(command, session);
                     case MAKE_MOVE -> makeMove(command, session);
                     case LEAVE -> disconnect(command);
+                    case RESIGN -> resign(command, session);
                 }
             } catch (Exception er) {
                 System.out.println(er.getMessage());
@@ -66,6 +74,12 @@ public class WebSocketHandler {
             }
         }
     }
+    private void resign(UserGameCommand command, Session session) throws IOException {
+        if (!command.isPlayer) {
+            sendErrorMessage(session, "Observers may not resign.");
+        }
+    }
+
     private void connect(UserGameCommand command, Session session) throws DataAccessException, IOException {
         connections.add(command, session);
         connections.printGame(new UserGameCommand(UserGameCommand.CommandType.CONNECT, command.getAuthToken(), command.getGameID()));
@@ -88,6 +102,9 @@ public class WebSocketHandler {
         String username = new SQLAuthTokenDAO().getAuthToken(command.getAuthToken()).getUsername();
         if (username == null) {
             sendErrorMessage(session, "You are not logged in. Please log in first.");
+        }
+        if (!command.isPlayer) {
+            sendErrorMessage(session, "Observers may not make moves.");
         }
 
         String[] params = command.move.split(" ");

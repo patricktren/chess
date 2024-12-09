@@ -16,6 +16,7 @@ public class ChessGame {
     public ChessGame() {
         board = new ChessBoard();
         currentTeamTurn = TeamColor.WHITE;
+        resetBoard(board);
     }
 
     /**
@@ -206,6 +207,9 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         ArrayList<ChessMove> validMoves = validMoves(teamColor);
+        if (board.toString() == "") {
+            return false;
+        }
         return (validMoves.isEmpty());
     }
 
@@ -218,6 +222,9 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         ArrayList<ChessMove> validMoves = validMoves(teamColor);
+        if (board.toString() == "") {
+            return false;
+        }
         return (validMoves.isEmpty() && !isInCheck(teamColor));
     }
 
