@@ -97,10 +97,6 @@ public class ConnectionManager {
             }
         }
         connections.put(command.getGameID(), newConnectionList);
-
-//        String username = new SQLAuthTokenDAO().getAuthToken(command.getAuthToken()).getUsername();
-//        String message = String.format("%s has left the game", username);
-//        broadcast(command.getGameID(), username, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null, null));
     }
     public void printGame(UserGameCommand command) throws IOException, DataAccessException {
         String username = new SQLAuthTokenDAO().getAuthToken(command.getAuthToken()).getUsername();

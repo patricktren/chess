@@ -67,7 +67,7 @@ public class ChessMove {
         return "moved from " + startPos + " to " + endPos;
     }
     public String parseIntToLetter(Integer myInt) {
-        myInt = myInt - 1;
+        myInt = myInt;
         return switch (myInt) {
             case 1 -> "a";
             case 2 -> "b";
