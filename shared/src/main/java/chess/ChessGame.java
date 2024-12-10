@@ -11,12 +11,24 @@ import java.util.*;
 public class ChessGame {
     private TeamColor currentTeamTurn;
     private ChessBoard board;
-
+    private boolean gameOver = false;
+    private String winner = "";
+    private TeamColor winnerColor;
 
     public ChessGame() {
         board = new ChessBoard();
         currentTeamTurn = TeamColor.WHITE;
         resetBoard(board);
+    }
+
+    public void resign(String username, TeamColor playerColor) {
+        winner = username;
+        this.winnerColor = playerColor;
+        gameOver = true;
+    }
+
+    public boolean getGameOver() {
+        return gameOver;
     }
 
     /**

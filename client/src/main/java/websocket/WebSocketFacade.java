@@ -1,6 +1,9 @@
 package websocket;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import server.ServerFacade;
@@ -70,8 +73,28 @@ public class WebSocketFacade extends Endpoint {
 
     public void makeMove(String paramStr, String authToken) throws ResponseException {
         try {
+            String[] params = paramStr.split(" ");
+            if (params.length != 2 & params.length != 3) {
+                throw new ResponseException(500, "Parameters incorrectly entered; please refer to the help menu.");
+            }
+            // parse move command into ChessMove
+            ChessMove move = null;
+
+            Integer rowStart = Integer.parseInt(String.valueOf(params[0].charAt(1)));
+            Integer colStart = parseLetterToInt(params[0].charAt(0));
+
+            Integer rowEnd = Integer.parseInt(String.valueOf(params[1].charAt(1)));
+            Integer colEnd = parseLetterToInt(params[1].charAt(0));
+
+            ChessPiece.PieceType promotion = null;
+            if (params.length == 3) {
+                String promotionStr = params[2];
+                promotion = ChessPiece.PieceType.valueOf(promotionStr.toUpperCase());
+            }
+            move = new ChessMove(new ChessPosition(rowStart, colStart), new ChessPosition(rowEnd, colEnd), promotion);
+
             UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, server.getCurrGameId());
-            command.setMove(paramStr);
+            command.setMove(move);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         }
         catch (IOException ex) {

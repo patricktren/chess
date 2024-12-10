@@ -18,6 +18,7 @@ import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 @WebSocket
@@ -74,7 +75,11 @@ public class WebSocketHandler {
             }
         }
     }
-    private void resign(UserGameCommand command, Session session) throws IOException {
+    private void resign(UserGameCommand command, Session session) throws IOException, DataAccessException {
+        var game = new SQLGameDAO().getGame(command.getGameID());
+        if (game.gameState().getGameOver()) {
+            sendErrorMessage(session, "The game is already over; you cannot resign.");
+        }
         if (!command.isPlayer) {
             sendErrorMessage(session, "Observers may not resign.");
         }
@@ -103,53 +108,34 @@ public class WebSocketHandler {
         if (username == null) {
             sendErrorMessage(session, "You are not logged in. Please log in first.");
         }
-        if (!command.isPlayer) {
-            sendErrorMessage(session, "Observers may not make moves.");
-        }
-
-        String[] params = command.move.split(" ");
-        if (params.length != 2 & params.length != 3) {
-
-            sendErrorMessage(session, "Incorrect number of parameters entered; please refer to the help menu.");
-        }
-        // parse move command into ChessMove
-        ChessMove move = null;
-        try {
-            Integer rowStart = Integer.parseInt(String.valueOf(params[0].charAt(1)));
-            Integer colStart = parseLetterToInt(params[0].charAt(0));
-
-            Integer rowEnd = Integer.parseInt(String.valueOf(params[1].charAt(1)));
-            Integer colEnd = parseLetterToInt(params[1].charAt(0));
-
-            ChessPiece.PieceType promotion = null;
-            if (params.length == 3) {
-                String promotionStr = params[2];
-                promotion = ChessPiece.PieceType.valueOf(promotionStr.toUpperCase());
-            }
-            move = new ChessMove(new ChessPosition(rowStart, colStart), new ChessPosition(rowEnd, colEnd), promotion);
-        }
-        catch (Exception e) {
-            sendErrorMessage(session, "Parameters were incorrectly entered; please refer to the help menu");
-        }
-        // attempt to make the move
         // get board
         var gameDAO = new SQLGameDAO();
         Game game = gameDAO.getGame(command.getGameID());
+        if (!game.whiteUsername().equals(username) && !game.blackUsername().equals(username)) {
+            command.isPlayer = false;
+            sendErrorMessage(session, "Observers may not make moves.");
+        }
+
+
+        // attempt to make the move
+        if (game.gameState().getGameOver()) {
+            sendErrorMessage(session, "The game is already over; you cannot make any more moves.");
+        }
         // check if promotion
-        boolean isPromotion = game.gameState().isPromotion(move);
-        if (isPromotion && move.getPromotionPiece() == null) {
+        boolean isPromotion = game.gameState().isPromotion(command.move);
+        if (isPromotion && command.move.getPromotionPiece() == null) {
             sendErrorMessage(session, "This piece will be promoted if you make this move; refer to the help menu," +
                     "then correctly enter in the parameters again, including the piece you want to promote to.");
-        } else if (!isPromotion && move.getPromotionPiece() != null) {
+        } else if (!isPromotion && command.move.getPromotionPiece() != null) {
             sendErrorMessage(session, "This piece cannot be promoted at this time. Please try making another move.");;
         }
-        game.gameState().makeMove(move);
+        game.gameState().makeMove(command.move);
 
         // update game
         gameDAO.updateGame(game);
         // notify players
         String notification = String.format("%s moved their %s from %s to %s",
-                username, game.gameState().getBoard().getPiece(move.getEndPosition()).getPieceType().toString(), move.getStartPosition(), move.getEndPosition());
+                username, game.gameState().getBoard().getPiece(command.move.getEndPosition()).getPieceType().toString(), command.move.getStartPosition(), command.move.getEndPosition());
         // print updated game state
 //        connections.broadcast(game.gameID(), null, new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, null, game, null));
         connections.printGame(command);
@@ -165,17 +151,4 @@ public class WebSocketHandler {
         session.getRemote().sendString(message.toString());
     }
 
-    public Integer parseLetterToInt(char character) {
-        return switch (String.valueOf(character)) {
-            case "a" -> 1;
-            case "b" -> 2;
-            case "c" -> 3;
-            case "d" -> 4;
-            case "e" -> 5;
-            case "f" -> 6;
-            case "g" -> 7;
-            case "h" -> 8;
-            default -> 0;
-        };
-    }
 }
