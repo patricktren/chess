@@ -136,9 +136,9 @@ public class ChessGame {
             throw new InvalidMoveException("Incorrect syntax for moving; check the help menu.");
         }
         // is it the right player's turn?
-//        if (startingPositionPiece.getTeamColor() != currentTeamTurn) {
-//            throw new InvalidMoveException("It's not your turn.");
-//        }
+        if (startingPositionPiece.getTeamColor() != currentTeamTurn) {
+            throw new InvalidMoveException("It's not your turn.");
+        }
         var validMoves = validMoves(move.startPosition);
         // move is valid?
         if (validMoves.contains(move)) {
