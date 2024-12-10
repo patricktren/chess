@@ -39,9 +39,11 @@ public class ConnectionManager {
                         && notification.getMessage() != null) {
                     ServerMessage personalMessage = null;
                     if (connection.playerColor != null) {
-                        connection.send(new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, null, notification.getGame(), connection.playerColor).toString());
+                        connection.send(new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,
+                                null, notification.getGame(), connection.playerColor).toString());
                     } else {
-                        connection.send(new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, null, notification.getGame(), ChessGame.TeamColor.WHITE).toString());
+                        connection.send(new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,
+                                null, notification.getGame(), ChessGame.TeamColor.WHITE).toString());
                     }
                 }
                 else if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.NOTIFICATION) &&
@@ -115,7 +117,8 @@ public class ConnectionManager {
             broadcast(command.getGameID(), username, new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, null, game, playerColor));
         }
         else {
-            broadcast(command.getGameID(), "", new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, username + " made a move", game, playerColor));
+            broadcast(command.getGameID(), "", new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,
+                    username + " made a move", game, playerColor));
         }
     }
 }

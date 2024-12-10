@@ -92,7 +92,8 @@ public class BoardDrawer {
         out.print(RESET_BG_COLOR);
     }
 
-    private void drawRow(Integer rowNum, ChessPiece[] row, Boolean startsLight, ArrayList<ChessPosition> toHighlight, ChessPosition piecePosition, ChessGame.TeamColor playerColor) {
+    private void drawRow(Integer rowNum, ChessPiece[] row, Boolean startsLight, ArrayList<ChessPosition> toHighlight,
+                         ChessPosition piecePosition, ChessGame.TeamColor playerColor) {
         boolean isLight = startsLight;
         // highlight potential moves for white player
         for (int c = 0; c < row.length; c++) {

@@ -2,6 +2,7 @@ package ui;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import exception.ResponseException;
 import model.Game;
 import protocol.*;
 import server.ServerFacade;
@@ -126,28 +127,28 @@ public class PostLoginClient implements Client {
         }
         try {
             GetGamesResponse getGamesResponse = server.list(new GetGamesRequest(authToken));
-            for (Game game:getGamesResponse.games()) {
+            Game thisGame = null;
+            for (Game game : getGamesResponse.games()) {
                 if (Objects.equals(server.getGameIDMap().get(gameNum), game.gameID())) {
-                    WebSocketFacade ws = new WebSocketFacade(server, postloginRepl, authToken, server.username);
-                    server.setCurrGameId(game.gameID());
-                    server.setAuthToken(authToken);
-                    ws.enterGame(server.username, null);
-                    Scanner scanner = new Scanner((System.in));
-                    String line = "";
-                    while (!line.equals("leave")) {
-                        line = scanner.nextLine();
-                        if (!Objects.equals(line, "leave")) {
-                            System.out.println("Invalid command; you may type 'leave' to leave, or keep watching.");
-                        }
-                        else {
-                            ws.leaveGame(server.username);
-                        }
-                    }
-
+                    thisGame = game;
                 }
             }
-        } catch (Throwable e) {
-            return "Couldn't connect to database";
+            WebSocketFacade ws = new WebSocketFacade(server, postloginRepl, authToken, server.username);
+            server.setCurrGameId(thisGame.gameID());
+            server.setAuthToken(authToken);
+            ws.enterGame(server.username, null);
+            Scanner scanner = new Scanner((System.in));
+            String line = "";
+            while (!line.equals("leave")) {
+                line = scanner.nextLine();
+                if (!Objects.equals(line, "leave")) {
+                    System.out.println("Invalid command; you may type 'leave' to leave, or keep watching.");
+                } else {
+                    ws.leaveGame(server.username);
+                }
+            }
+        } catch (Exception e) {
+            return "Error: couldn't connect to database.";
         }
         return "";
     }
