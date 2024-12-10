@@ -62,9 +62,12 @@ public class ChessMove {
 
     @Override
     public String toString() {
-        return "moved from " + startPosition.toString() + " to " + endPosition.toString();
+        String startPos = parseIntToLetter(startPosition.col) + String.valueOf(startPosition.row);
+        String endPos = parseIntToLetter(endPosition.col) + String.valueOf(endPosition.row);
+        return "moved from " + startPos + " to " + endPos;
     }
     public String parseIntToLetter(Integer myInt) {
+        myInt = myInt - 1;
         return switch (myInt) {
             case 1 -> "a";
             case 2 -> "b";

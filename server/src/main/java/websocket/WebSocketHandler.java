@@ -174,8 +174,7 @@ public class WebSocketHandler {
         // update game
         gameDAO.updateGame(game);
         // notify players
-        String notification = String.format("%s moved their %s from %s to %s",
-                username, game.gameState().getBoard().getPiece(command.move.getEndPosition()).getPieceType().toString(), command.move.getStartPosition(), command.move.getEndPosition());
+        String notification = String.format("%s %s", username, command.move.toString());
         // print updated game state
 //        connections.broadcast(game.gameID(), null, new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, null, game, null));
         connections.printGame(command);
