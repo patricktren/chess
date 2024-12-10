@@ -44,6 +44,10 @@ public class ConnectionManager {
                         connection.send(new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, null, notification.getGame(), ChessGame.TeamColor.WHITE).toString());
                     }
                 }
+                else if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.NOTIFICATION) &&
+                        excludeVisitorName == null) {
+                    connection.send(notification.toString());
+                }
             } else {
                 removeList.add(connection);
             }

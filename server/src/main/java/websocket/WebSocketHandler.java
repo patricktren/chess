@@ -1,13 +1,12 @@
 package websocket;
 
-import chess.ChessMove;
-import chess.ChessPiece;
-import chess.ChessPosition;
-import chess.InvalidMoveException;
+import chess.*;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
+import dataaccess.GameDAO;
 import dataaccess.SQLAuthTokenDAO;
 import dataaccess.SQLGameDAO;
+import exception.Message;
 import model.Game;
 import model.User;
 import org.eclipse.jetty.websocket.api.Session;
@@ -78,11 +77,31 @@ public class WebSocketHandler {
     private void resign(UserGameCommand command, Session session) throws IOException, DataAccessException {
         var game = new SQLGameDAO().getGame(command.getGameID());
         if (game.gameState().getGameOver()) {
-            sendErrorMessage(session, "The game is already over; you cannot resign.");
+            sendErrorMessage(session, "You may not resign because the game has already ended.");
+            return;
         }
-        if (!command.isPlayer) {
+
+        String username = new SQLAuthTokenDAO().getAuthToken(command.getAuthToken()).getUsername();
+        // get playerColor
+        ChessGame.TeamColor playerColor = null;
+        if (game.whiteUsername() != null && game.whiteUsername().equals(username)) {
+            playerColor = ChessGame.TeamColor.WHITE;
+        } else if (game.blackUsername() != null && game.blackUsername().equals(username)) {
+            playerColor = ChessGame.TeamColor.BLACK;
+        }
+        // check if observer is trying to make a move
+        if (!game.whiteUsername().equals(username) && !game.blackUsername().equals(username)) {
+            command.isPlayer = false;
             sendErrorMessage(session, "Observers may not resign.");
+            return;
         }
+        game.gameState().resign(username, playerColor);
+        new SQLGameDAO().updateGame(game);
+
+        // send message of resignation
+        String msgStr = username + " has resigned from the game as the " + playerColor.toString() + " player.";
+        ServerMessage message = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, msgStr, null, playerColor);
+        connections.broadcast(game.gameID(), null, message);
     }
 
     private void connect(UserGameCommand command, Session session) throws DataAccessException, IOException {
@@ -111,15 +130,36 @@ public class WebSocketHandler {
         // get board
         var gameDAO = new SQLGameDAO();
         Game game = gameDAO.getGame(command.getGameID());
+        // check if observer is trying to make a move
         if (!game.whiteUsername().equals(username) && !game.blackUsername().equals(username)) {
             command.isPlayer = false;
             sendErrorMessage(session, "Observers may not make moves.");
+            return;
+        }
+        // get playerColor
+        ChessGame.TeamColor playerColor = null;
+        if (game.whiteUsername() != null && game.whiteUsername().equals(username)) {
+            playerColor = ChessGame.TeamColor.WHITE;
+        } else if (game.blackUsername() != null && game.blackUsername().equals(username)) {
+            playerColor = ChessGame.TeamColor.BLACK;
+        }
+        // check to see if it's the turn of the person trying to make a move
+        if (game.gameState().getTeamTurn() != playerColor) {
+            sendErrorMessage(session, "It's not your turn yet!");
+            return;
+        }
+
+        // check if a player is trying to make a move for the other team
+        if (game.gameState().getBoard().getPiece(command.move.getStartPosition()).getTeamColor() != playerColor) {
+            sendErrorMessage(session, "You may only move your own pieces.");
+            return;
         }
 
 
         // attempt to make the move
         if (game.gameState().getGameOver()) {
-            sendErrorMessage(session, "The game is already over; you cannot make any more moves.");
+            sendErrorMessage(session, "You may not make a move because the game has already ended.");
+            return;
         }
         // check if promotion
         boolean isPromotion = game.gameState().isPromotion(command.move);

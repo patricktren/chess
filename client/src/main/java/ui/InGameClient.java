@@ -37,6 +37,7 @@ public class InGameClient implements Client {
                 case "highlight" -> highlight(params, authToken);
                 case "redraw" -> redraw(null);
                 case "leave" -> leave();
+                case "resign" -> resign();
                 case "move" -> move(params, authToken);
                 case "help" -> inGameRepl.helpPrompt();
                 default -> "Invalid command; refer to the options below:\n" + inGameRepl.helpPrompt();
@@ -98,5 +99,10 @@ public class InGameClient implements Client {
     public String leave() throws ResponseException {
         ws.leaveGame(server.username);
         return "leave";
+    }
+
+    public String resign() throws ResponseException {
+        ws.resign(server.username);
+        return "";
     }
 }
