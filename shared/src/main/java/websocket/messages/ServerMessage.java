@@ -36,6 +36,10 @@ public class ServerMessage {
         }
     }
 
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
     public String getMessage() {
         return message;
     }

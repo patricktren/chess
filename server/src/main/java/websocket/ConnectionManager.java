@@ -37,7 +37,6 @@ public class ConnectionManager {
                 // print game on move
                 else if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.LOAD_GAME)
                         && notification.getMessage() != null) {
-                    ServerMessage personalMessage = null;
                     if (connection.playerColor != null) {
                         connection.send(new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,
                                 null, notification.getGame(), connection.playerColor).toString());

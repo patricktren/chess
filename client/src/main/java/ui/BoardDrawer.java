@@ -20,13 +20,14 @@ public class BoardDrawer {
 
     PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
-    public void drawChessBoard(ChessBoard board, ChessGame.TeamColor playerColor, ChessPosition highlightPiecePosition) {
+    public void drawChessBoard(ChessGame game, ChessGame.TeamColor playerColor, ChessPosition highlightPiecePosition) {
+        ChessBoard board = game.getBoard();
         ArrayList<ChessMove> toHighlightMoves = null;
         ArrayList<ChessPosition> positionsToHighlight = new ArrayList<>();
         // highlight positions
         if (highlightPiecePosition != null && board.getPiece(highlightPiecePosition) != null) {
             // get possible moves and convert to ChessPositions
-            toHighlightMoves = new ArrayList<>(board.getPiece(highlightPiecePosition).pieceMoves(board, highlightPiecePosition));
+            toHighlightMoves = new ArrayList<>(game.validMoves(highlightPiecePosition));
             positionsToHighlight = new ArrayList<>();
             for (ChessMove move:toHighlightMoves) {
                 positionsToHighlight.add(move.getEndPosition());

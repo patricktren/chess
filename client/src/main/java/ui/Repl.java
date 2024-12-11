@@ -32,10 +32,13 @@ public class Repl implements NotificationHandler {
         }
         else if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.LOAD_GAME)) {
             if (notification.getPlayerColor() != null) {
-                new BoardDrawer().drawChessBoard(notification.getGame().gameState().getBoard(), notification.getPlayerColor(), null);
+                new BoardDrawer().drawChessBoard(notification.getGame().gameState(), notification.getPlayerColor(), null);
             } else {
-                new BoardDrawer().drawChessBoard(notification.getGame().gameState().getBoard(), ChessGame.TeamColor.WHITE, null);
+                new BoardDrawer().drawChessBoard(notification.getGame().gameState(), ChessGame.TeamColor.WHITE, null);
             }
+        }
+        else if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.ERROR)) {
+            System.out.println(notification.getErrorMessage());
         }
     }
 }

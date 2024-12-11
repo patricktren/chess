@@ -14,6 +14,7 @@ public class ChessGame {
     private boolean gameOver = false;
     private String winner = "";
     private TeamColor winnerColor;
+    private boolean stalemate = false;
 
     public ChessGame() {
         board = new ChessBoard();
@@ -24,6 +25,11 @@ public class ChessGame {
     public void resign(String username, TeamColor playerColor) {
         winner = username;
         this.winnerColor = playerColor;
+        gameOver = true;
+    }
+
+    public void stalemate() {
+        stalemate = true;
         gameOver = true;
     }
 

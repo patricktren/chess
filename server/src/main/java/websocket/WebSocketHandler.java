@@ -136,6 +136,13 @@ public class WebSocketHandler {
             sendErrorMessage(session, "Observers may not make moves.");
             return;
         }
+
+        // check if game is over
+        if (game.gameState().getGameOver()) {
+            sendErrorMessage(session, "You may not make a move because the game has already ended.");
+            return;
+        }
+
         // get playerColor
         ChessGame.TeamColor playerColor = null;
         if (game.whiteUsername() != null && game.whiteUsername().equals(username)) {
@@ -149,18 +156,18 @@ public class WebSocketHandler {
             return;
         }
 
+        // check to see if there is a piece on the starting position
+        if (game.gameState().getBoard().getPiece(command.move.getStartPosition()) == null) {
+            sendErrorMessage(session, "There is no piece at the starting position you gave.");
+            return;
+        }
+
         // check if a player is trying to make a move for the other team
         if (game.gameState().getBoard().getPiece(command.move.getStartPosition()).getTeamColor() != playerColor) {
             sendErrorMessage(session, "You may only move your own pieces.");
             return;
         }
 
-
-        // attempt to make the move
-        if (game.gameState().getGameOver()) {
-            sendErrorMessage(session, "You may not make a move because the game has already ended.");
-            return;
-        }
         // check if promotion
         boolean isPromotion = game.gameState().isPromotion(command.move);
         if (isPromotion && command.move.getPromotionPiece() == null) {
@@ -181,7 +188,40 @@ public class WebSocketHandler {
         // notify users
         ServerMessage message = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, notification, null, null);
         connections.broadcast(game.gameID(), username, message);
+        // notify users if a check, checkmate, or stalemate has occurred
+        ChessGame.TeamColor opposingColor;
+        if (playerColor.equals(ChessGame.TeamColor.WHITE)) {
+            opposingColor = ChessGame.TeamColor.BLACK;
+        }
+        else {
+            opposingColor = ChessGame.TeamColor.WHITE;
+        }
 
+        // is in checkmate
+        if (game.gameState().isInCheckmate(opposingColor)) {
+            notification = opposingColor.toString() + " has been placed in checkmate! The game is over, and " + username + " has won the game!";
+            game.gameState().resign(username, playerColor);
+            new SQLGameDAO().updateGame(game);
+            message = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, notification, null, null);
+            connections.broadcast(game.gameID(), null, message);
+            return;
+        }
+        // is in stalemate
+        if (game.gameState().isInStalemate(opposingColor)) {
+            notification = "stalemates in chess are silly, but one has occurred (" + username + " really won tbh tho).";
+            game.gameState().stalemate();
+            new SQLGameDAO().updateGame(game);
+            message = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, notification, null, null);
+            connections.broadcast(game.gameID(), null, message);
+            return;
+        }
+        // in check
+        if (game.gameState().isInCheck(opposingColor)) {
+            notification = opposingColor.toString() + " has been placed in check!";
+            message = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, notification, null, null);
+            connections.broadcast(game.gameID(), null, message);
+            return;
+        }
     }
 
     private void sendErrorMessage(Session session, String errorMessage) throws IOException {

@@ -60,7 +60,7 @@ public class InGameClient implements Client {
 
     private String redraw(ChessPosition positionToHighlightMoves) {
         ChessGame currGame = getCurrGame();
-        boardDrawer.drawChessBoard(currGame.getBoard(), inGameRepl.getPlayerColor(), positionToHighlightMoves);
+        boardDrawer.drawChessBoard(currGame, inGameRepl.getPlayerColor(), positionToHighlightMoves);
         return "";
     }
 
